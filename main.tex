@@ -152,17 +152,27 @@ MITALEE OZA \\[0.4em]
 % \vspace{1em}
 ]
 
-\setcounter{section}{-1}
+\section*{Preamble}
+\input{sections/00_preamble}
 
-\input{sections/00_introduction}
-\input{sections/01_model_setup}
-\input{sections/02_part1_lqr_hover}
-\input{sections/03_part1_weak_controllability}
-\input{sections/04_part1_lqr_derivations_results}
-\input{sections/05_part2_tracking}
-\input{sections/06_part3_mission_problem}
-\input{sections/07_part4_nonlinear_near_hover}
-\input{sections/08_validation_and_limitations}
-\input{sections/09_conclusion}
+\section{Part I: Fixed-Time LQR Around Different Nominal Trajectories}
+\input{sections/01_part1_lqr_hover}
+\input{sections/02_part1_weak_controllability}
+\input{sections/03_part1_lqr_derivations_results}
+
+\section{Part II: Optimal Trajectory Tracking}
+\input{sections/04_part2_tracking}
+
+\section{Part III: Mission Problem}
+\input{sections/05_part3_mission_problem}
+
+\section{Part IV: Nonlinear Optimal Control Near Hover}
+\input{sections/06_part4_nonlinear_near_hover}
+
+\section*{Validation, Limitations, and Discussion}
+\input{sections/07_validation_and_limitations}
+
+\section*{Conclusion}
+\input{sections/08_conclusion}
 
 \end{document}
