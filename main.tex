@@ -1,0 +1,176 @@
+\documentclass[9pt,a4paper,twocolumn,twoside]{article}
+
+% -------------------------------------------------
+% Encoding and language
+% -------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+% -------------------------------------------------
+% Page layout
+% -------------------------------------------------
+\usepackage[a4paper,margin=1.7cm,columnsep=0.6cm,top=1.8cm,bottom=2cm]{geometry}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+% -------------------------------------------------
+% Math
+% -------------------------------------------------
+\usepackage{amsmath,amssymb,amsthm}
+
+% -------------------------------------------------
+% Graphics and tables
+% -------------------------------------------------
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{placeins}
+
+% -------------------------------------------------
+% Links
+% -------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+
+% -------------------------------------------------
+% Header/footer
+% -------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+% \fancyhead[LE]{\footnotesize\itshape Sample Research Article}
+% \fancyhead[RO]{\footnotesize\itshape Lightweight Rho-like Template}
+\fancyfoot[C]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% -------------------------------------------------
+% Section styling
+% -------------------------------------------------
+\usepackage{titlesec}
+\definecolor{titleblue}{HTML}{1F4E79}
+\definecolor{softgray}{HTML}{666666}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries\color{titleblue}}
+  {\thesection}{0.5em}{}
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries\color{titleblue}}
+  {\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\itshape}
+  {\thesubsubsection}{0.5em}{}
+
+% -------------------------------------------------
+% Drop cap
+% -------------------------------------------------
+\usepackage{lettrine}
+\newcommand{\articlestart}[2]{%
+  \lettrine[lines=2,lhang=0.1,nindent=0em]{#1}{#2}%
+}
+
+% -------------------------------------------------
+% Simple note environment
+% -------------------------------------------------
+\newtheoremstyle{mynote}
+  {6pt}{6pt}
+  {\normalfont}
+  {}
+  {\bfseries\color{titleblue}}
+  {.}
+  {0.5em}
+  {}
+\theoremstyle{mynote}
+\newtheorem{note}{Note}
+
+% -------------------------------------------------
+% Helper commands
+% -------------------------------------------------
+\newcommand{\figref}[1]{Figure~\ref{#1}}
+\newcommand{\tabref}[1]{Table~\ref{#1}}
+\newcommand{\equref}[1]{Equation~\eqref{#1}}
+\newcommand{\inlinecode}[1]{\texttt{#1}}
+
+% -------------------------------------------------
+% Front-matter macros
+% -------------------------------------------------
+\newcommand{\doctype}[1]{\def\mydoctype{#1}}
+\newcommand{\dates}[1]{\def\mydates{#1}}
+\newcommand{\keywords}[1]{\def\mykeywords{#1}}
+\newcommand{\corres}[1]{\def\mycorres{#1}}
+\newcommand{\docinfo}[1]{\def\mydocinfo{#1}}
+\newcommand{\articletitle}[1]{\def\mytitle{#1}}
+\newcommand{\articleauthors}[1]{\def\myauthors{#1}}
+\newcommand{\articleabstract}[1]{\def\myabstract{#1}}
+
+\doctype{MAE 270C COURSE PROJECT 2026}
+\dates{Compiled on \today}
+% \keywords{keyword one, keyword two, keyword three}
+% \corres{\href{mailto:your.email@domain.com}{your.email@domain.com}}
+% \docinfo{Prepared in Overleaf using standard packages and pdf\LaTeX.}
+
+\articletitle{Optimal Control of a Variable-Mass Thrust-Vectoring Lander
+\\[0.4em]
+}
+
+\articleauthors{
+MITALEE OZA \\[0.4em]
+% \small $^{1}$Affiliation of author one\\
+% \small $^{2}$Affiliation of author two\\
+% \small $^{3}$Affiliation of author three
+}
+
+\articleabstract{
+
+}
+
+\begin{document}
+
+\twocolumn[
+\begin{center}
+{\small\color{softgray}\textsc{\mydoctype}\par}
+\vspace{0.4em}
+{\LARGE\bfseries\color{titleblue}\mytitle\par}
+\vspace{0.8em}
+{\normalsize\myauthors\par}
+\vspace{0.5em}
+{\small\color{softgray}\mydates\par}
+\end{center}
+
+\vspace{0.8em}
+\hrule
+\vspace{0.8em}
+
+% {\small\textbf{Abstract.} \myabstract\par}
+\vspace{0.4em}
+% {\small\textbf{Keywords:} \mykeywords\par}
+% \vspace{0.3em}
+% {\small\textbf{Correspondence:} \mycorres\par}
+% \vspace{0.3em}
+% {\small\textbf{Document info:} \mydocinfo\par}
+% \vspace{1em}
+]
+\setcounter{section}{-1}
+\section{Introduction}
+
+The implementation corresponding to this project is available at:
+
+\section{Fixed-Time LQR Around Different Nominal Trajectories}
+
+\subsection{Linearization around Hover}
+
+\subsection{Weakly Controllable Linearization}
+
+\subsection{Optimal control problem and derivations}
+
+\subsection{Implementation}
+
+\section{Optimal Trajectory Tracking}
+
+\section{Mission Problem}
+
+\section{The Nonlinear Optimal Control Near Hover}
+
+
+\end{document}

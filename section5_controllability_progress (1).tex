@@ -1,0 +1,400 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.72in]{geometry}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\setlist[itemize]{topsep=0.2em,itemsep=0.2em}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\dd}{\delta}
+\newcommand{\thb}{\bar\theta}
+\newcommand{\mb}{\bar m}
+\newcommand{\Tb}{\bar T}
+\newcommand{\ub}{\bar u}
+\newcommand{\xb}{\bar x}
+\newcommand{\eps}{\omega}
+\newcommand{\vphi}{\alpha}
+
+\title{Section 5 Progress Notes: Linearization and Controllability}
+\author{Optimal Control Project}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Goal of this progress note}
+We view both Section 5.1 and Section 5.2 as linearizations of the nonlinear lander dynamics around a nominal trajectory
+\[
+    \xb(t),\qquad \ub(t).
+\]
+This gives a linear time-varying perturbation system. The hover case becomes linear time-invariant when we freeze the mass or assume that the mass changes slowly over the time horizon.
+
+\section{Nonlinear lander dynamics}
+The state and input are
+\[
+    x = \begin{bmatrix}p_x & p_z & v_x & v_z & \theta & \eps & m\end{bmatrix}^{\top},
+    \qquad
+    u = \begin{bmatrix}T & \tau\end{bmatrix}^{\top}.
+\]
+The nonlinear dynamics are
+\begin{align}
+    \dot p_x &= v_x, &
+    \dot p_z &= v_z, \\
+    \dot v_x &= \frac{T}{m}\sin\theta, &
+    \dot v_z &= \frac{T}{m}\cos\theta - g, \\
+    \dot\theta &= \eps, &
+    \dot\eps &= \frac{\tau}{I}, \\
+    \dot m &= -\vphi T.
+\end{align}
+
+\section{Linearization around a nominal trajectory}
+Let
+\[
+    \xb(t)=
+    \begin{bmatrix}
+    \bar p_x(t) & \bar p_z(t) & \bar v_x(t) & \bar v_z(t) & \thb(t) & \bar\eps(t) & \mb(t)
+    \end{bmatrix}^{\top},
+    \qquad
+    \ub(t)=
+    \begin{bmatrix}\Tb(t) & \bar\tau(t)\end{bmatrix}^{\top}.
+\]
+Define perturbations
+\[
+    \dd x(t)=x(t)-\xb(t),
+    \qquad
+    \dd u(t)=u(t)-\ub(t)=
+    \begin{bmatrix}\dd T(t) & \dd\tau(t)\end{bmatrix}^{\top}.
+\]
+If the nominal trajectory satisfies the nonlinear dynamics, then the first-order perturbation dynamics are
+\[
+    \boxed{\dd\dot x(t)=A(t)\dd x(t)+B(t)\dd u(t)}.
+\]
+Here
+\[
+    A(t)=\left.\frac{\partial f}{\partial x}\right|_{(\xb(t),\ub(t))},
+    \qquad
+    B(t)=\left.\frac{\partial f}{\partial u}\right|_{(\xb(t),\ub(t))}.
+\]
+Explicitly,
+{\small
+\[
+A(t)=
+\begin{bmatrix}
+0&0&1&0&0&0&0\\
+0&0&0&1&0&0&0\\
+0&0&0&0&\dfrac{\Tb}{\mb}\cos\thb&0&-\dfrac{\Tb}{\mb^2}\sin\thb\\
+0&0&0&0&-\dfrac{\Tb}{\mb}\sin\thb&0&-\dfrac{\Tb}{\mb^2}\cos\thb\\
+0&0&0&0&0&1&0\\
+0&0&0&0&0&0&0\\
+0&0&0&0&0&0&0
+\end{bmatrix},
+\]
+\[
+B(t)=
+\begin{bmatrix}
+0&0\\
+0&0\\
+\dfrac{1}{\mb}\sin\thb&0\\
+\dfrac{1}{\mb}\cos\thb&0\\
+0&0\\
+0&\dfrac{1}{I}\\
+-\vphi&0
+\end{bmatrix}.
+\]
+}
+All barred quantities are evaluated at the same time $t$.
+
+\section{Section 5.1: hover as a nominal trajectory}
+For hover, take
+\[
+    \bar v_x(t)=\bar v_z(t)=0,
+    \qquad
+    \thb(t)=0,
+    \qquad
+    \bar\eps(t)=0,
+    \qquad
+    \bar\tau(t)=0.
+\]
+If mass depletion is retained, a dynamically consistent hover-like trajectory has
+\[
+    \Tb(t)=\mb(t)g,
+    \qquad
+    \dot{\mb}(t)=-\vphi g\mb(t),
+    \qquad
+    \mb(t)=m_0e^{-\vphi gt}.
+\]
+The corresponding time-varying hover linearization is
+\[
+    \dd\dot x(t)=A_{\mathrm{hov}}(t)\dd x(t)+B_{\mathrm{hov}}(t)\dd u(t),
+\]
+where
+{\small
+\[
+A_{\mathrm{hov}}(t)=
+\begin{bmatrix}
+0&0&1&0&0&0&0\\
+0&0&0&1&0&0&0\\
+0&0&0&0&g&0&0\\
+0&0&0&0&0&0&-\dfrac{g}{\mb(t)}\\
+0&0&0&0&0&1&0\\
+0&0&0&0&0&0&0\\
+0&0&0&0&0&0&0
+\end{bmatrix},
+\qquad
+B_{\mathrm{hov}}(t)=
+\begin{bmatrix}
+0&0\\
+0&0\\
+0&0\\
+\dfrac{1}{\mb(t)}&0\\
+0&0\\
+0&\dfrac{1}{I}\\
+-\vphi&0
+\end{bmatrix}.
+\]
+}
+
+\subsection*{Slow mass / frozen mass approximation}
+If $m(t)$ does not change rapidly, freeze $\mb(t)\approx m_h$. Then
+\[
+    \boxed{\dd\dot x=A_{\mathrm{hov}}\dd x+B_{\mathrm{hov}}\dd u}
+\]
+is linear time-invariant, with
+{\small
+\[
+A_{\mathrm{hov}}=
+\begin{bmatrix}
+0&0&1&0&0&0&0\\
+0&0&0&1&0&0&0\\
+0&0&0&0&g&0&0\\
+0&0&0&0&0&0&-\dfrac{g}{m_h}\\
+0&0&0&0&0&1&0\\
+0&0&0&0&0&0&0\\
+0&0&0&0&0&0&0
+\end{bmatrix},
+\qquad
+B_{\mathrm{hov}}=
+\begin{bmatrix}
+0&0\\
+0&0\\
+0&0\\
+\dfrac{1}{m_h}&0\\
+0&0\\
+0&\dfrac{1}{I}\\
+-\vphi&0
+\end{bmatrix}.
+\]
+}
+
+\section{Section 5.2: time-varying trajectory with small sinusoidal attitude}
+To introduce time-varying translational--rotational coupling, choose a nominal attitude with small sinusoidal variation:
+\[
+    \boxed{\thb(t)=\theta_{\mathrm{amp}}\sin(\Omega t)},
+    \qquad
+    0<\theta_{\mathrm{amp}}\ll 1.
+\]
+Introduce a fixed thrust bias/error $\Delta T$:
+\[
+    \boxed{\Tb(t)=\mb(t)g+\Delta T}.
+\]
+Then the nominal mass evolves according to
+\[
+    \dot{\mb}(t)=-\vphi\Tb(t)=-\vphi\bigl(g\mb(t)+\Delta T\bigr),
+\]
+so
+\[
+    \boxed{\mb(t)=\left(m_0+\frac{\Delta T}{g}\right)e^{-\vphi gt}-\frac{\Delta T}{g}}.
+\]
+With these choices, the linearized LTV system is
+\[
+    \boxed{\dd\dot x(t)=A_{\mathrm{sin}}(t)\dd x(t)+B_{\mathrm{sin}}(t)\dd u(t)},
+\]
+where $A_{\mathrm{sin}}(t),B_{\mathrm{sin}}(t)$ are the general matrices above with
+\[
+    \thb(t)=\theta_{\mathrm{amp}}\sin(\Omega t),
+    \qquad
+    \Tb(t)=g\mb(t)+\Delta T.
+\]
+The key coupling term is
+\[
+    \frac{\partial \dot v_x}{\partial T}
+    =\frac{1}{\mb(t)}\sin\thb(t).
+\]
+When $\thb(t)=0$, thrust perturbations do not directly affect horizontal acceleration. When $\thb(t)$ is small but nonzero, the thrust perturbation introduces a direct horizontal acceleration channel.
+
+\section{LTI controllability: matrix and Gramian}
+For an LTI system
+\[
+    \dot x=Ax+Bu,
+    \qquad x\in\R^n,
+\]
+the Kalman controllability matrix is
+\[
+    \boxed{\mathcal C=\begin{bmatrix}B&AB&A^2B&\cdots&A^{n-1}B\end{bmatrix}}.
+\]
+The system is controllable iff
+\[
+    \boxed{\operatorname{rank}(\mathcal C)=n}.
+\]
+The finite-horizon controllability Gramian is
+\[
+    \boxed{W_c(0,t_f)=\int_0^{t_f}e^{A(t_f-\tau)}BB^{\top}e^{A^{\top}(t_f-\tau)}\,d\tau}.
+\]
+Equivalently, compute it by solving the matrix ODE
+\[
+    \boxed{\dot W_c(t)=AW_c(t)+W_c(t)A^{\top}+BB^{\top},\qquad W_c(0)=0.}
+\]
+Since $W_c$ is symmetric positive semidefinite, its singular values equal its eigenvalues:
+\[
+    \sigma_i(W_c)=\lambda_i(W_c)\ge 0.
+\]
+The smallest singular/eigenvalue measures the weakest controllable direction:
+\[
+    \boxed{\sigma_{\min}(W_c)=\lambda_{\min}(W_c)}.
+\]
+
+\subsection*{Hover controllability matrix blocks}
+For the frozen-mass hover model, $n=7$, so
+\[
+    \mathcal C_{\mathrm{hov}}=
+    \begin{bmatrix}
+    B_{\mathrm{hov}}&A_{\mathrm{hov}}B_{\mathrm{hov}}&A_{\mathrm{hov}}^2B_{\mathrm{hov}}&A_{\mathrm{hov}}^3B_{\mathrm{hov}}&0&0&0
+    \end{bmatrix}.
+\]
+The nonzero blocks are
+{\small
+\[
+B_{\mathrm{hov}}=
+\begin{bmatrix}
+0&0\\0&0\\0&0\\\frac{1}{m_h}&0\\0&0\\0&\frac{1}{I}\\-\vphi&0
+\end{bmatrix},
+\quad
+A_{\mathrm{hov}}B_{\mathrm{hov}}=
+\begin{bmatrix}
+0&0\\\frac{1}{m_h}&0\\0&0\\\frac{g\vphi}{m_h}&0\\0&\frac{1}{I}\\0&0\\0&0
+\end{bmatrix},
+\]
+\[
+A_{\mathrm{hov}}^2B_{\mathrm{hov}}=
+\begin{bmatrix}
+0&0\\\frac{g\vphi}{m_h}&0\\0&\frac{g}{I}\\0&0\\0&0\\0&0\\0&0
+\end{bmatrix},
+\quad
+A_{\mathrm{hov}}^3B_{\mathrm{hov}}=
+\begin{bmatrix}
+0&\frac{g}{I}\\0&0\\0&0\\0&0\\0&0\\0&0\\0&0
+\end{bmatrix}.
+\]
+}
+Thus, the two main control chains are
+\[
+    \dd\tau \rightarrow \dd\eps \rightarrow \dd\theta \rightarrow \dd v_x \rightarrow \dd p_x,
+\]
+\[
+    \dd T \rightarrow \dd v_z,\dd m \rightarrow \dd p_z.
+\]
+For $g\neq 0$, $I\neq0$, $m_h\neq0$, and $\vphi\neq0$, the full seven-state frozen-mass hover model has
+\[
+    \operatorname{rank}(\mathcal C_{\mathrm{hov}})=7.
+\]
+
+\section{LTV controllability: Gramian and computational diagnostic}
+For an LTV system
+\[
+    \dot x(t)=A(t)x(t)+B(t)u(t),
+\]
+let $\Phi(t,s)$ be the state-transition matrix:
+\[
+    \frac{\partial}{\partial t}\Phi(t,s)=A(t)\Phi(t,s),
+    \qquad
+    \Phi(s,s)=I.
+\]
+The finite-horizon controllability Gramian is
+\[
+    \boxed{W_c(0,t_f)=\int_0^{t_f}\Phi(t_f,\tau)B(\tau)B(\tau)^{\top}\Phi(t_f,\tau)^{\top}\,d\tau.}
+\]
+For computation, solve
+\[
+    \boxed{\dot W_c(t)=A(t)W_c(t)+W_c(t)A(t)^{\top}+B(t)B(t)^{\top},\qquad W_c(0)=0.}
+\]
+Then compute
+\[
+    \boxed{\sigma_i(W_c(0,t_f))=\lambda_i(W_c(0,t_f))}.
+\]
+
+\subsection*{Time-varying controllability matrix diagnostic}
+For a truly time-varying system, the matrix
+\[
+    \begin{bmatrix}B(t)&A(t)B(t)&A(t)^2B(t)&\cdots\end{bmatrix}
+\]
+is not a complete controllability test in general. However, it is useful as an instantaneous diagnostic. For each sampled time $t_k$, compute
+\[
+    \mathcal C_{\mathrm{inst}}(t_k)=
+    \begin{bmatrix}B(t_k)&A(t_k)B(t_k)&\cdots&A(t_k)^{6}B(t_k)\end{bmatrix},
+\]
+and compare
+\[
+    \operatorname{rank}(\mathcal C_{\mathrm{inst}}(t_k)),
+    \qquad
+    \sigma_{\min}(\mathcal C_{\mathrm{inst}}(t_k)).
+\]
+The rigorous finite-horizon comparison should be done using $W_c(0,t_f)$.
+
+\section{Computation summary}
+Example parameters used for a numerical diagnostic:
+\[
+    g=9.81,\quad I=10,\quad \vphi=0.005,\quad m_0=20,
+\]
+\[
+    \Delta T=20,\quad \theta_{\mathrm{amp}}=0.05,\quad \Omega=\frac{2\pi}{5},\quad t_f=5.
+\]
+For the frozen-mass hover model:
+\[
+    \operatorname{rank}(\mathcal C_{\mathrm{hov}})=7,
+    \qquad
+    \sigma_{\min}(\mathcal C_{\mathrm{hov}})\approx 1.20\times 10^{-5}.
+\]
+The hover finite-horizon Gramian has
+\[
+    \lambda_{\min}(W_{c,\mathrm{hov}})\approx 4.89\times 10^{-10},
+    \qquad
+    \lambda_{\max}(W_{c,\mathrm{hov}})\approx 4.46\times 10^2,
+\]
+\[
+    \kappa(W_{c,\mathrm{hov}})\approx 9.13\times 10^{11}.
+\]
+For the sinusoidal-angle LTV trajectory:
+\[
+    \lambda_{\min}(W_{c,\mathrm{sin}})\approx 1.51\times 10^{-7},
+    \qquad
+    \lambda_{\max}(W_{c,\mathrm{sin}})\approx 5.60\times 10^2,
+\]
+\[
+    \kappa(W_{c,\mathrm{sin}})\approx 3.70\times 10^9.
+\]
+Interpretation: the small sinusoidal attitude makes $\sin\thb(t)$ nonzero over much of the horizon, so thrust perturbations directly contribute to horizontal acceleration. This improves the smallest Gramian eigenvalue compared with pure hover in this numerical diagnostic.
+
+\section{Python computation recipe}
+At each time $t$, compute
+\[
+    \mb(t)=\left(m_0+\frac{\Delta T}{g}\right)e^{-\vphi gt}-\frac{\Delta T}{g},
+    \qquad
+    \thb(t)=\theta_{\mathrm{amp}}\sin(\Omega t),
+    \qquad
+    \Tb(t)=g\mb(t)+\Delta T.
+\]
+Then construct $A(t),B(t)$ and integrate
+\[
+    \dot W_c=A(t)W_c+W_cA(t)^{\top}+B(t)B(t)^{\top}.
+\]
+Finally compute
+\[
+    \operatorname{eigvalsh}(W_c(t_f))
+\]
+because $W_c(t_f)$ is symmetric.
+
+\end{document}
