@@ -12,87 +12,52 @@ Let \(\delta x_{\mathrm{base}}(0)\) denote the reference initial perturbation. F
 \]
 For each value of \(\gamma\), we solve the finite-horizon LQR problem and record the resulting state response and control perturbation energy. This experiment compares how the three linearized models respond as the initial deviation from the corresponding nominal trajectory increases.
 
-\paragraph{Control energy consumed.}
-Figure~\ref{fig:control-energy-vs-scale} shows the control perturbation energy as a function of the initial perturbation scale. The control perturbation energy is computed from the deviation input \(\delta u(t)\), and therefore measures the additional control effort required relative to the corresponding nominal input.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/control_energy_vs_scale.png}
-    \caption{Control perturbation energy as a function of the initial perturbation scale for the hover, nominal no-coupling, and nominal coupling linearizations.}
-    \label{fig:control-energy-vs-scale}
-\end{figure}
-
-The hover and nominal no-coupling cases require comparable control energy across the tested perturbation scales. In contrast, the nominal coupling case requires substantially larger control perturbation energy as the perturbation scale increases. This indicates that the coupled nominal trajectory uses more aggressive control corrections to respond to the same initial deviation. The effect becomes more pronounced for larger perturbations, showing that the control effort required by the coupled trajectory is more sensitive to the size of the initial error.
-
-\paragraph{State variation.}
-We next compare the state perturbation histories for the representative case \(\gamma=1\). Figure~\ref{fig:state-norm-scale1} shows the Euclidean norm of the state perturbation. All three trajectories start from the same initial perturbation norm, but their subsequent evolution differs. The nominal coupling case produces the smallest final state perturbation norm, while the hover case produces the largest. Thus, although the coupled nominal trajectory uses more control energy, it also reduces the state deviation more effectively over the finite horizon.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.90\columnwidth]{figures/state_norm_time_history_scale_1p0.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5C/control_energy_vs_scale.png}
     \caption{State perturbation norm \(\|\delta x(t)\|_2\) for perturbation scale \(\gamma=1\).}
     \label{fig:state-norm-scale1}
 \end{figure}
 
-The component-wise state histories are shown in Figures~\ref{fig:px-scale1}--\ref{fig:m-scale1}. The horizontal position perturbation \(\delta p_x\) grows for all three linearizations because the initial horizontal velocity perturbation is positive. However, the nominal coupling case gives a smaller terminal horizontal position deviation than the hover and no-coupling cases. This is consistent with the fact that the prescribed attitude variation introduces a stronger coupling between thrust perturbations and horizontal motion.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/delta_p_x_time_history_scale_1p0.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5C/delta_p_x_time_history_scale_1p0.png}
     \caption{Horizontal position perturbation \(\delta p_x(t)\) for perturbation scale \(\gamma=1\).}
     \label{fig:px-scale1}
 \end{figure}
 
-The vertical position perturbation \(\delta p_z\) initially increases and then decreases for all three cases. The nominal coupling case has a smaller final vertical position perturbation, indicating that the time-varying coupled trajectory leads to a different redistribution of corrective effort between vertical and horizontal motion.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/delta_p_z_time_history_scale_1p0.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5C/delta_p_z_time_history_scale_1p0.png}
     \caption{Vertical position perturbation \(\delta p_z(t)\) for perturbation scale \(\gamma=1\).}
     \label{fig:pz-scale1}
 \end{figure}
 
-The horizontal velocity response shows the clearest distinction between the three models. The nominal coupling case decreases \(\delta v_x\) more strongly by the end of the horizon, whereas the hover and no-coupling cases retain larger horizontal velocity deviations. This behavior is physically meaningful: with a nonzero nominal attitude, thrust perturbations have a stronger horizontal component, whereas near hover the horizontal direction is influenced more indirectly through attitude dynamics.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/delta_v_x_time_history_scale_1p0.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5C/delta_v_x_time_history_scale_1p0.png}
     \caption{Horizontal velocity perturbation \(\delta v_x(t)\) for perturbation scale \(\gamma=1\).}
     \label{fig:vx-scale1}
 \end{figure}
-
-The vertical velocity perturbation decays toward zero for all three models. The nominal coupling case crosses zero earlier and stays closer to zero near the end of the horizon, while the hover and no-coupling responses show slightly larger residual deviations.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/delta_v_z_time_history_scale_1p0.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5C/delta_v_z_time_history_scale_1p0.png}
     \caption{Vertical velocity perturbation \(\delta v_z(t)\) for perturbation scale \(\gamma=1\).}
     \label{fig:vz-scale1}
 \end{figure}
 
-The attitude and angular velocity perturbations remain qualitatively similar for the three models. This suggests that the main difference between the linearizations is not in the rotational response alone, but in how the rotational and translational dynamics are coupled along the nominal trajectory.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/delta_theta_time_history_scale_1p0.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5C/delta_theta_time_history_scale_1p0.png}
     \caption{Attitude perturbation \(\delta\theta(t)\) for perturbation scale \(\gamma=1\).}
     \label{fig:theta-scale1}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/delta_omega_time_history_scale_1p0.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5C/delta_omega_time_history_scale_1p0.png}
     \caption{Angular velocity perturbation \(\delta\omega(t)\) for perturbation scale \(\gamma=1\).}
     \label{fig:omega-scale1}
 \end{figure}
 
-Finally, Figure~\ref{fig:m-scale1} shows the mass perturbation. As in the hover case, \(\delta m\) is interpreted relative to the corresponding nominal trajectory. The different mass-deviation histories are caused by differences in the thrust perturbation histories required by the three linearized controllers.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.90\columnwidth]{figures/delta_m_time_history_scale_1p0.png}
-    \caption{Mass perturbation \(\delta m(t)\) for perturbation scale \(\gamma=1\).}
-    \label{fig:m-scale1}
-\end{figure}
-
-Overall, the comparison shows that the nominal coupling trajectory achieves smaller final state deviations, especially in the horizontal velocity and position components. However, this improvement requires substantially larger control perturbation energy. Thus, adding nominal attitude variation improves the effective translational--rotational coupling, but at the cost of increased actuation effort.
