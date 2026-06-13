@@ -1,10 +1,311 @@
 % !TEX root = ../main.tex
 
 \subsection{Nonlinear Fixed-Time Optimal Control Problem}
-% TODO: State the full nonlinear near-hover optimal control problem.
 
-\subsection{Nonlinear PMP Conditions}
-% TODO: Derive nonlinear Hamiltonian, costate equations, stationarity, and TPBVP.
+In the previous linearized problems, the state and input penalties were imposed on deviation variables rather than on the absolute physical state and input. We follow the same convention in the nonlinear near-hover problem. Thus, although the dynamics are kept nonlinear, the objective penalizes deviations from the chosen hover trim condition. This makes the nonlinear problem directly comparable with the LQR regulation and tracking formulations studied earlier.
+
+We consider the exact nonlinear variable-mass dynamics under three simplifying assumptions: the trajectory remains near hover, the attitude angles remain moderate, and the maneuver duration is short enough that the vehicle mass does not change by a large fraction of its initial value. These assumptions keep the nonlinear indirect optimal control problem numerically manageable while still retaining the translational--rotational coupling and the effect of mass depletion.
+
+\subsection{Nonlinear PMP in Deviation Coordinates}
+
+Define the deviation variables
+\begin{equation}
+    z = x - x_{\mathrm{hover}},
+    \qquad
+    v = u - u_{\mathrm{hover}}.
+\end{equation}
+The hover state and input are
+\begin{equation}
+    x_{\mathrm{hover}}
+    =
+    \begin{bmatrix}
+        p_{x,h} & p_{z,h} & 0 & 0 & 0 & 0 & m_h
+    \end{bmatrix}^{\top},
+    \qquad
+    u_{\mathrm{hover}}
+    =
+    \begin{bmatrix}
+        m_h g & 0
+    \end{bmatrix}^{\top}.
+\end{equation}
+Thus,
+\begin{equation}
+    z
+    =
+    \begin{bmatrix}
+        \delta p_x &
+        \delta p_z &
+        \delta v_x &
+        \delta v_z &
+        \delta\theta &
+        \delta\omega &
+        \delta m
+    \end{bmatrix}^{\top},
+    \qquad
+    v
+    =
+    \begin{bmatrix}
+        \delta T &
+        \delta\tau
+    \end{bmatrix}^{\top}.
+\end{equation}
+The physical variables are recovered as
+\begin{equation}
+    T = m_h g + \delta T,
+    \qquad
+    \tau = \delta\tau,
+    \qquad
+    m = m_h + \delta m,
+    \qquad
+    \theta = \delta\theta.
+\end{equation}
+
+The nonlinear deviation dynamics are
+\begin{align}
+    \dot{\delta p_x}
+    &=
+    \delta v_x, \\
+    \dot{\delta p_z}
+    &=
+    \delta v_z, \\
+    \dot{\delta v_x}
+    &=
+    \frac{m_h g+\delta T}{m_h+\delta m}\sin(\delta\theta), \\
+    \dot{\delta v_z}
+    &=
+    \frac{m_h g+\delta T}{m_h+\delta m}\cos(\delta\theta)-g, \\
+    \dot{\delta\theta}
+    &=
+    \delta\omega, \\
+    \dot{\delta\omega}
+    &=
+    \frac{\delta\tau}{I}, \\
+    \dot{\delta m}
+    &=
+    -\alpha\delta T.
+\end{align}
+The mass-deviation equation above subtracts the nominal hover mass-consumption rate. Equivalently, the deviation model removes the baseline drift associated with the hover thrust \(m_hg\), so that only excess thrust relative to hover contributes to \(\dot{\delta m}\). Without this deviation-drift subtraction, using a fixed reference mass would instead give \(\dot{\delta m} = -\alpha(m_h g+\delta T)\).
+
+The cost functional is
+\begin{equation}
+    J
+    =
+    \int_0^{t_f}
+    \left(
+        z^{\top}Qz
+        +
+        v^{\top}Rv
+    \right)\,dt.
+\end{equation}
+Let the costate be
+\begin{equation}
+    \lambda
+    =
+    \begin{bmatrix}
+        \lambda_{p_x} &
+        \lambda_{p_z} &
+        \lambda_{v_x} &
+        \lambda_{v_z} &
+        \lambda_{\theta} &
+        \lambda_{\omega} &
+        \lambda_m
+    \end{bmatrix}^{\top}.
+\end{equation}
+The Hamiltonian is
+\begin{align}
+    H
+    &=
+    z^{\top}Qz
+    +
+    v^{\top}Rv
+    +
+    \lambda_{p_x}\delta v_x
+    +
+    \lambda_{p_z}\delta v_z \nonumber \\
+    &\quad
+    +
+    \lambda_{v_x}
+    \frac{m_h g+\delta T}{m_h+\delta m}
+    \sin(\delta\theta) \nonumber \\
+    &\quad
+    +
+    \lambda_{v_z}
+    \left[
+        \frac{m_h g+\delta T}{m_h+\delta m}
+        \cos(\delta\theta)
+        -
+        g
+    \right] \nonumber \\
+    &\quad
+    +
+    \lambda_{\theta}\delta\omega
+    +
+    \lambda_{\omega}\frac{\delta\tau}{I}
+    -
+    \alpha\lambda_m\delta T .
+\end{align}
+The state equations are
+\begin{equation}
+    \dot z = \frac{\partial H}{\partial \lambda}.
+\end{equation}
+The costate equations are
+\begin{equation}
+    \dot\lambda = -\frac{\partial H}{\partial z}.
+\end{equation}
+Equivalently,
+\begin{align}
+    \dot\lambda_{p_x}
+    &=
+    -2(Qz)_{p_x}, \\
+    \dot\lambda_{p_z}
+    &=
+    -2(Qz)_{p_z}, \\
+    \dot\lambda_{v_x}
+    &=
+    -2(Qz)_{v_x}
+    -
+    \lambda_{p_x}, \\
+    \dot\lambda_{v_z}
+    &=
+    -2(Qz)_{v_z}
+    -
+    \lambda_{p_z}, \\
+    \dot\lambda_{\theta}
+    &=
+    -2(Qz)_{\theta}
+    -
+    \lambda_{v_x}
+    \frac{m_h g+\delta T}{m_h+\delta m}
+    \cos(\delta\theta)
+    +
+    \lambda_{v_z}
+    \frac{m_h g+\delta T}{m_h+\delta m}
+    \sin(\delta\theta), \\
+    \dot\lambda_{\omega}
+    &=
+    -2(Qz)_{\omega}
+    -
+    \lambda_{\theta}, \\
+    \dot\lambda_m
+    &=
+    -2(Qz)_m
+    +
+    \lambda_{v_x}
+    \frac{m_h g+\delta T}{(m_h+\delta m)^2}
+    \sin(\delta\theta)
+    +
+    \lambda_{v_z}
+    \frac{m_h g+\delta T}{(m_h+\delta m)^2}
+    \cos(\delta\theta).
+\end{align}
+
+The stationarity condition is
+\begin{equation}
+    0 = \frac{\partial H}{\partial v}.
+\end{equation}
+Thus,
+\begin{equation}
+    0
+    =
+    2Rv
+    +
+    \begin{bmatrix}
+        \dfrac{1}{m_h+\delta m}
+        \left(
+            \lambda_{v_x}\sin(\delta\theta)
+            +
+            \lambda_{v_z}\cos(\delta\theta)
+        \right)
+        -
+        \alpha\lambda_m
+        \\[6pt]
+        \dfrac{\lambda_{\omega}}{I}
+    \end{bmatrix}.
+\end{equation}
+If
+\begin{equation}
+    R
+    =
+    \begin{bmatrix}
+        r_T & 0 \\
+        0 & r_{\tau}
+    \end{bmatrix},
+\end{equation}
+then the unconstrained optimal deviation inputs are
+\begin{align}
+    \delta T^*
+    &=
+    -\frac{1}{2r_T}
+    \left[
+        \frac{1}{m_h+\delta m}
+        \left(
+            \lambda_{v_x}\sin(\delta\theta)
+            +
+            \lambda_{v_z}\cos(\delta\theta)
+        \right)
+        -
+        \alpha\lambda_m
+    \right], \\
+    \delta\tau^*
+    &=
+    -\frac{\lambda_{\omega}}{2r_{\tau}I}.
+\end{align}
+With control bounds, the constrained optimal controls are obtained by clipping the unconstrained inputs to the admissible deviation-control intervals:
+\begin{align}
+    \delta T^*
+    &=
+    \operatorname{clip}
+    \left(
+        \delta T_{\mathrm{uncon}},
+        T_{\min}-m_hg,
+        T_{\max}-m_hg
+    \right), \\
+    \delta\tau^*
+    &=
+    \operatorname{clip}
+    \left(
+        \delta\tau_{\mathrm{uncon}},
+        \tau_{\min},
+        \tau_{\max}
+    \right).
+\end{align}
+
+The boundary conditions are
+\begin{equation}
+    z(0)=x_0-x_{\mathrm{hover}},
+    \qquad
+    \lambda(t_f)=0.
+\end{equation}
+The resulting two-point boundary value problem is
+\begin{equation}
+    \begin{bmatrix}
+        \dot z \\
+        \dot\lambda
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \dfrac{\partial H}{\partial \lambda} \\
+        -\dfrac{\partial H}{\partial z}
+    \end{bmatrix},
+    \qquad
+    z(0)=x_0-x_{\mathrm{hover}},
+    \qquad
+    \lambda(t_f)=0.
+\end{equation}
+The physical trajectory and control are recovered by
+\begin{equation}
+    x(t)=x_{\mathrm{hover}}+z(t),
+    \qquad
+    u(t)=u_{\mathrm{hover}}+v(t).
+\end{equation}
+Equivalently,
+\begin{equation}
+    T(t)=m_hg+\delta T(t),
+    \qquad
+    \tau(t)=\delta\tau(t).
+\end{equation}
+
+Unlike the LQR problems in the previous sections, this nonlinear TPBVP does not reduce to a Riccati equation. The dynamics depend nonlinearly on the attitude angle, the mass deviation, and the products between the thrust input and the state-dependent terms \((m_h+\delta m)^{-1}\sin(\delta\theta)\) and \((m_h+\delta m)^{-1}\cos(\delta\theta)\).
 
 \subsection{Linear--Nonlinear Comparison}
 % TODO: Compare the linear controller on linear dynamics, the linear controller on nonlinear dynamics, and the nonlinear optimal controller.
