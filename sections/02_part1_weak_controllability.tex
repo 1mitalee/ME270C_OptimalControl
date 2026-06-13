@@ -1,5 +1,266 @@
 % !TEX root = ../main.tex
 
 \subsection{Weakly Controllable Linearization}
-% TODO: Define the nominal descending trajectory and derive the time-varying linearization.
-% TODO: Present controllability matrices/Gramians and compare with the hover linearization.
+
+In the previous subsection, we studied the linearized dynamics around the hover trim condition. We now consider linearizations around non-equilibrium nominal trajectories. The purpose of this subsection is to compare how the controllability properties change when the vehicle is not exactly hovering, but instead follows a powered-descent trajectory with significant horizontal velocity and weak translational--rotational coupling.
+
+We consider three cases for comparison:
+\begin{enumerate}
+    \item the frozen-mass hover linearization,
+    \item a nominal descent trajectory with thrust close to hover and zero torque,
+    \item a nominal descent trajectory with a prescribed small attitude oscillation, which introduces additional coupling between rotational and translational motion.
+\end{enumerate}
+
+The nonlinear dynamics are linearized along a nominal trajectory
+\[
+    x^\star(t)
+    =
+    \begin{bmatrix}
+        p_x^\star(t) &
+        p_z^\star(t) &
+        v_x^\star(t) &
+        v_z^\star(t) &
+        \theta^\star(t) &
+        \omega^\star(t) &
+        m^\star(t)
+    \end{bmatrix}^{\top},
+    \qquad
+    u^\star(t)
+    =
+    \begin{bmatrix}
+        T^\star(t) &
+        \tau^\star(t)
+    \end{bmatrix}^{\top}.
+\]
+Writing
+\[
+    \delta x(t)=x(t)-x^\star(t),
+    \qquad
+    \delta u(t)=u(t)-u^\star(t),
+\]
+the first-order linearized dynamics are
+\[
+    \delta \dot x(t)
+    =
+    A(t)\delta x(t)+B(t)\delta u(t),
+\]
+where
+\[
+    A(t)
+    =
+    \left.\frac{\partial f}{\partial x}\right|_{(x^\star(t),u^\star(t))},
+    \qquad
+    B(t)
+    =
+    \left.\frac{\partial f}{\partial u}\right|_{(x^\star(t),u^\star(t))}.
+\]
+
+For the full nonlinear dynamics,
+\[
+\begin{aligned}
+    \dot p_x &= v_x, \\
+    \dot p_z &= v_z, \\
+    \dot v_x &= \frac{T}{m}\sin\theta, \\
+    \dot v_z &= \frac{T}{m}\cos\theta-g, \\
+    \dot\theta &= \omega, \\
+    \dot\omega &= \frac{\tau}{I}, \\
+    \dot m &= -\alpha T,
+\end{aligned}
+\]
+the Jacobian matrices along a nominal trajectory are
+\[
+A(t)
+=
+\begin{bmatrix}
+0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 &
+\dfrac{T^\star}{m^\star}\cos\theta^\star
+& 0 &
+-\dfrac{T^\star}{(m^\star)^2}\sin\theta^\star \\
+0 & 0 & 0 & 0 &
+-\dfrac{T^\star}{m^\star}\sin\theta^\star
+& 0 &
+-\dfrac{T^\star}{(m^\star)^2}\cos\theta^\star \\
+0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix},
+\]
+and
+\[
+B(t)
+=
+\begin{bmatrix}
+0 & 0 \\
+0 & 0 \\
+\dfrac{\sin\theta^\star}{m^\star} & 0 \\
+\dfrac{\cos\theta^\star}{m^\star} & 0 \\
+0 & 0 \\
+0 & \dfrac{1}{I} \\
+-\alpha & 0
+\end{bmatrix}.
+\]
+Here and below, the quantities \(T^\star,m^\star,\theta^\star\) are evaluated at time \(t\).
+
+\subsubsection{Nominal trajectory with zero torque}
+
+For the first non-hover trajectory, we choose the nominal input
+\[
+    T^\star(t) = m^\star(t)g(1+\beta),
+    \qquad
+    \tau^\star(t)=0,
+\]
+with
+\[
+    \beta = 0.01.
+\]
+The initial condition is
+\[
+    x^\star(0)
+    =
+    \begin{bmatrix}
+        0 & 100 & 100 & -20 & 0 & 0 & 20
+    \end{bmatrix}^{\top}.
+\]
+Since the torque is zero and the initial attitude and angular velocity are zero, the nominal attitude remains
+\[
+    \theta^\star(t)=0,
+    \qquad
+    \omega^\star(t)=0.
+\]
+Thus the nominal motion has large horizontal velocity, downward vertical velocity, and thrust slightly above the hover value. The horizontal motion is not generated directly by thrust, since the thrust vector remains aligned with the vertical axis. Horizontal corrections can only be produced indirectly through attitude perturbations.
+
+Along this trajectory, the Jacobian matrices simplify because \(\theta^\star=0\). In particular,
+\[
+    \sin\theta^\star=0,
+    \qquad
+    \cos\theta^\star=1.
+\]
+Therefore,
+\[
+    \frac{\partial \dot v_x}{\partial \theta}
+    =
+    \frac{T^\star}{m^\star}
+    =
+    g(1+\beta),
+\]
+while
+\[
+    \frac{\partial \dot v_x}{\partial T}=0.
+\]
+This means that horizontal acceleration is not directly actuated by thrust perturbations. Instead, a torque perturbation must first change angular acceleration, then angular velocity, then attitude, and only then horizontal acceleration. This creates an indirect actuation chain
+\[
+    \delta \tau
+    \longrightarrow
+    \delta\omega
+    \longrightarrow
+    \delta\theta
+    \longrightarrow
+    \delta v_x
+    \longrightarrow
+    \delta p_x.
+\]
+As a result, horizontal position is expected to be more weakly controllable over short horizons than vertical motion.
+
+\subsubsection{Nominal trajectory with prescribed attitude coupling}
+
+For the second non-hover trajectory, we prescribe a small attitude variation
+\[
+    \theta^\star(t)=a\sin(bt),
+\]
+where
+\[
+    a = 5^\circ.
+\]
+In the implementation, the angle amplitude is converted to radians. The parameter \(b\) determines the temporal frequency of the oscillation. With this choice,
+\[
+    \omega^\star(t)=\dot\theta^\star(t)=ab\cos(bt),
+\]
+so the initial angular velocity is nonzero:
+\[
+    \omega^\star(0)=ab.
+\]
+The corresponding nominal torque is chosen consistently with the rotational dynamics:
+\[
+    \tau^\star(t)
+    =
+    I\ddot\theta^\star(t)
+    =
+    -Iab^2\sin(bt).
+\]
+The thrust is again chosen close to hover,
+\[
+    T^\star(t)=m^\star(t)g(1+\beta),
+\]
+with the same value \(\beta=0.01\), and the remaining initial conditions are chosen similarly to the zero-torque trajectory.
+
+The purpose of this second trajectory is to introduce explicit time-varying coupling between the translational and rotational dynamics. Since \(\theta^\star(t)\) is no longer identically zero, both \(\sin\theta^\star(t)\) and \(\cos\theta^\star(t)\) enter the matrices \(A(t)\) and \(B(t)\). In particular, thrust perturbations now have a horizontal component through
+\[
+    \frac{\partial \dot v_x}{\partial T}
+    =
+    \frac{\sin\theta^\star(t)}{m^\star(t)},
+\]
+and the translational dynamics acquire additional time variation through the attitude-dependent terms
+\[
+    \frac{T^\star(t)}{m^\star(t)}\cos\theta^\star(t),
+    \qquad
+    -\frac{T^\star(t)}{m^\star(t)}\sin\theta^\star(t).
+\]
+Thus, compared with the zero-torque trajectory, the prescribed-attitude trajectory introduces stronger coupling between thrust, attitude, and horizontal motion.
+
+\subsubsection{Controllability analysis using finite-horizon Gramians}
+
+For a time-invariant linear system, the Kalman controllability matrix provides a standard algebraic test for controllability. However, for a time-varying linear system
+\[
+    \delta\dot x(t)=A(t)\delta x(t)+B(t)\delta u(t),
+\]
+the usual constant-matrix controllability matrix
+\[
+    \begin{bmatrix}
+        B & AB & A^2B & \cdots & A^{n-1}B
+    \end{bmatrix}
+\]
+is not a reliable controllability test because \(A(t)\) and \(B(t)\) vary along the nominal trajectory. Therefore, we instead compare finite-horizon controllability Gramians.
+
+Let \(\Phi(t,s)\) denote the state transition matrix associated with \(A(t)\), defined by
+\[
+    \frac{\partial}{\partial t}\Phi(t,s)
+    =
+    A(t)\Phi(t,s),
+    \qquad
+    \Phi(s,s)=I.
+\]
+The finite-horizon controllability Gramian over \([0,t_f]\) is
+\[
+    W_c(0,t_f)
+    =
+    \int_0^{t_f}
+    \Phi(t_f,t)B(t)B(t)^{\top}\Phi(t_f,t)^{\top}\,dt.
+\]
+For the hover case, \(A\) and \(B\) are constant, so this reduces to
+\[
+    W_c(0,t_f)
+    =
+    \int_0^{t_f}
+    e^{A(t_f-t)}BB^{\top}e^{A^{\top}(t_f-t)}\,dt.
+\]
+For the two non-hover nominal trajectories, the Gramian is computed numerically using the time-varying matrices \(A(t)\) and \(B(t)\) obtained along the simulated nominal trajectory.
+
+To compare the three cases, we compute the eigenvalues or singular values of the resulting Gramians. In particular, the smallest eigenvalue
+\[
+    \lambda_{\min}(W_c)
+\]
+provides a measure of the least controllable direction over the finite horizon. A small value of \(\lambda_{\min}(W_c)\) indicates that some direction in state space requires a large amount of control energy to excite. We therefore compare
+\[
+    \lambda_{\min}(W_{c,\mathrm{hover}}),
+    \qquad
+    \lambda_{\min}(W_{c,\mathrm{zero\ torque}}),
+    \qquad
+    \lambda_{\min}(W_{c,\mathrm{attitude\ coupled}}),
+\]
+together with the corresponding condition numbers of the Gramians.
+
+Physically, weak controllability arises because horizontal motion is affected only indirectly through attitude. Vertical motion is directly influenced by thrust perturbations, and angular motion is directly influenced by torque perturbations. In contrast, horizontal position requires a sequence of dynamical couplings: torque must change attitude, attitude must rotate the thrust direction, and the rotated thrust must then produce horizontal acceleration. Over a short finite horizon, this chain of integrations makes the horizontal direction more difficult to control. The second nominal trajectory partially alleviates this by introducing a nonzero nominal attitude, which allows thrust perturbations to have an immediate horizontal component. However, because the attitude angles remain small, this direct horizontal thrust component is still weak.
+
+The numerical Gramian comparison therefore serves two purposes. First, it quantifies the extent to which the non-hover powered-descent trajectories are less controllable than the hover linearization. Second, it identifies whether the prescribed attitude variation improves or degrades the least controllable directions relative to the zero-torque trajectory.
