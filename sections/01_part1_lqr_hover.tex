@@ -13,7 +13,7 @@ We choose the nominal hover operating point
     \qquad
     u^\star =
     \begin{bmatrix}
-        m_h g & 0
+        m_h^{\star} g & 0
     \end{bmatrix}^\top.
 \]
 Strictly speaking, this point is not an equilibrium of the full seven-dimensional variable-mass system because
@@ -25,7 +25,7 @@ Strictly speaking, this point is not an equilibrium of the full seven-dimensiona
     \end{bmatrix}^\top
     \neq 0.
 \]
-The thrust $T=m_hg$ balances gravity in the vertical acceleration equation and gives zero angular acceleration when $\tau=0$, but the mass still decreases due to fuel consumption. Therefore, the hover operating condition is more accurately interpreted as a trim point for the mechanical states, rather than as an equilibrium of the full variable-mass dynamics. Equivalently, it is a local approximation over a time interval on which the mass does not change appreciably.
+Therefore, the hover operating condition is more accurately interpreted as a trim point for the mechanical states, rather than as an equilibrium of the full variable-mass dynamics. Equivalently, it is a local approximation over a time interval on which the mass does not change appreciably.
 
 Let the perturbation variables be
 \[
@@ -42,7 +42,7 @@ Let the perturbation variables be
 The first-order Taylor expansion gives
 \[
     \delta \dot x
-    = f(x^\star,u^\star) + A_h \delta x + B_h \delta u,
+    = A_h \delta x + B_h \delta u,
 \]
 where
 \[
@@ -74,17 +74,10 @@ B_h =
 -\alpha & 0
 \end{bmatrix}.
 \]
-The nonzero entries have direct physical interpretations. The term $g\,\delta\theta$ in the horizontal acceleration equation shows that horizontal translation is controlled indirectly through attitude. The term $\delta T/m_h$ in the vertical acceleration equation shows that thrust deviations from hover change vertical acceleration. The term $-g\delta m/m_h$ appears because, at fixed thrust $m_hg$, a lower mass produces a larger upward acceleration. Finally, torque directly controls angular acceleration, and thrust directly affects mass depletion.
 
-For the LQR calculations in this part, we use the standard frozen-mass hover approximation. This approximation neglects the affine drift $f(x^\star,u^\star)$ and treats $m_h$ as constant over the short maneuver horizon. The resulting linear time-invariant perturbation model is
-\[
-    \delta \dot x = A_h \delta x + B_h \delta u.
-\]
-When no ambiguity arises, we write the perturbation variables simply as $x$ and $u$ in the LQR derivation.
-
-\subsection{Controllability of the Hover Linearization}
+\subsubsection{Controllability of the Hover Linearization}
 \label{subsec:hover_controllability}
-
+\paragraph{Controllability Matrix}
 For the hover linearization, controllability can be studied using the LTI controllability matrix
 \[
     \mathcal{C}_h
@@ -93,7 +86,38 @@ For the hover linearization, controllability can be studied using the LTI contro
         B_h & A_hB_h & A_h^2B_h & \cdots & A_h^{6}B_h
     \end{bmatrix}.
 \]
-Numerically, we evaluate the rank of $\mathcal{C}_h$ and the singular values of $\mathcal{C}_h$ to determine how easily different state directions can be actuated. We also compute the finite-horizon controllability Gramian
+Numerically, we evaluate the rank of $\mathcal{C}_h$ and the singular values of $\mathcal{C}_h$ to determine how easily different state directions can be actuated.
+The nonzero blocks are
+{\small
+\[
+B_{\mathrm{hov}}=
+\begin{bmatrix}
+0&0\\0&0\\0&0\\\frac{1}{m_h}&0\\0&0\\0&\frac{1}{I}\\-\alpha&0
+\end{bmatrix},
+\quad
+A_{\mathrm{hov}}B_{\mathrm{hov}}=
+\begin{bmatrix}
+0&0\\\frac{1}{m_h}&0\\0&0\\\frac{g\alpha}{m_h}&0\\0&\frac{1}{I}\\0&0\\0&0
+\end{bmatrix},
+\]
+\[
+A_{\mathrm{hov}}^2B_{\mathrm{hov}}=
+\begin{bmatrix}
+0&0\\\frac{g\alpha}{m_h}&0\\0&\frac{g}{I}\\0&0\\0&0\\0&0\\0&0
+\end{bmatrix},
+\quad
+A_{\mathrm{hov}}^3B_{\mathrm{hov}}=
+\begin{bmatrix}
+0&\frac{g}{I}\\0&0\\0&0\\0&0\\0&0\\0&0\\0&0
+\end{bmatrix}.
+\]
+}
+
+\[
+    \operatorname{rank}(\mathcal C_{\mathrm{hov}})=7.
+\]
+\paragraph{Controllability Grammian}
+We also compute the finite-horizon controllability Gramian
 \[
     W_h(t_f)
     =
@@ -101,4 +125,12 @@ Numerically, we evaluate the rank of $\mathcal{C}_h$ and the singular values of 
 \]
 The smallest eigenvalue of $W_h(t_f)$ gives a quantitative measure of the least controllable direction over the time horizon $[0,t_f]$. A small value indicates that some state direction requires large control energy to influence, even if the system is theoretically controllable.
 
-The hover model has a clear control structure. Vertical motion is actuated directly through thrust deviations, while horizontal motion is actuated indirectly through attitude: torque changes angular velocity, angular velocity changes attitude, and attitude redirects thrust to generate horizontal acceleration. This indirect chain makes horizontal position control weaker than vertical acceleration control over short horizons. The numerical singular-value and Gramian comparisons in Section~\ref{subsec:weak_controllability} make this distinction explicit.
+For computation, we solve
+\[
+    \boxed{\dot W_c(t)=A(t)W_c(t)+W_c(t)A(t)^{\top}+B(t)B(t)^{\top},\qquad W_c(0)=0.}
+\]
+Then we compute
+\[
+    \boxed{\sigma_i(W_c(0,t_f))=\lambda_i(W_c(0,t_f))}.
+\]
+
