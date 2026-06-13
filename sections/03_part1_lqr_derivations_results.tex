@@ -18,22 +18,22 @@ The corresponding linearized dynamics have the form
     =
     A(t)\delta x(t)+B(t)\delta u(t).
 \]
-For the hover linearization, the frozen-mass approximation gives constant matrices \(A\) and \(B\), so the system is time-invariant. For the non-hover nominal trajectories, the matrices \(A(t)\) and \(B(t)\) vary along the trajectory, so the system is time-varying.
+
 
 Since the linearized state and input are deviations from a nominal trajectory, we define the LQR cost function in the same deviation coordinates. Thus the finite-horizon quadratic regulation problem is
-\[
+\begin{align}
     \min_{\delta u(\cdot)}
     J
-    =
+    &=
     \int_0^{t_f}
     \left(
         \delta x(t)^\top Q\delta x(t)
         +
         \delta u(t)^\top R\delta u(t)
-    \right)dt
-    +
+    \right)dt \\ \nonumber
+    &+
     \delta x(t_f)^\top Q_f \delta x(t_f),
-\]
+\end{align}
 subject to
 \[
     \delta \dot x(t)
@@ -42,26 +42,22 @@ subject to
     \qquad
     \delta x(0)=x_0-x^\star(0).
 \]
-Here \(Q\succeq 0\), \(Q_f\succeq 0\), and \(R\succ 0\). The matrix \(Q\) penalizes deviation of the state from the nominal trajectory, \(R\) penalizes deviation of the input from the nominal input, and \(Q_f\) penalizes terminal deviation. This convention is important: for example, in the hover case the physical thrust is recovered as
-\[
-    T(t)=T^\star+\delta T(t),
-\]
-so the control cost penalizes the thrust correction \(\delta T\), not the full thrust magnitude \(T\).
-
+Here \(Q\succeq 0\), \(Q_f\succeq 0\), and \(R\succ 0\). The matrix \(Q\) penalizes deviation of the state from the nominal trajectory, \(R\) penalizes deviation of the input from the nominal input, and \(Q_f\) penalizes terminal deviation. 
 
 
 \subsection{PMP and Riccati Derivation}
 
 For the time-varying linearized system, define the Hamiltonian
-\[
-    H(\delta x,\delta u,\lambda,t)
-    =
+\begin{align}
+        H(\delta x,\delta u,\lambda,t)
+    &=
     \delta x^\top Q\delta x
     +
-    \delta u^\top R\delta u
-    +
-    \lambda^\top\left(A(t)\delta x+B(t)\delta u\right),
-\]
+    \delta u^\top R\delta u\\ \nonumber
+    &+
+    \lambda^\top\left(A(t)\delta x+B(t)\delta u\right)\\ \nonumber
+\end{align}
+
 where \(\lambda(t)\) is the costate. Pontryagin's Maximum Principle gives
 \[
     \delta \dot x
@@ -98,19 +94,7 @@ The terminal cost gives the transversality condition
     2Q_f\delta x(t_f).
 \]
 
-The LQR structure is obtained by using the quadratic value-function ansatz
-\[
-    V(t,\delta x)=\delta x^\top P(t)\delta x.
-\]
-Then
-\[
-    \lambda(t)
-    =
-    \frac{\partial V}{\partial(\delta x)}
-    =
-    2P(t)\delta x(t).
-\]
-Substituting this expression into the stationarity condition gives the optimal feedback law
+The optimal control law is given by,
 \[
     \delta u^*(t)
     =
@@ -127,7 +111,7 @@ and the closed-loop linearized dynamics are
     \left(A(t)-B(t)K(t)\right)\delta x(t).
 \]
 
-The Riccati differential equation is
+Here, the matrix P(t) satisfies the matrix Riccati equation,
 \[
     -\dot P(t)
     =
@@ -146,9 +130,8 @@ For the frozen-mass hover linearization, \(A(t)=A\) and \(B(t)=B\), so the Ricca
     A^\top P(t)+P(t)A
     -P(t)BR^{-1}B^\top P(t)
     +Q,
-    \qquad
-    P(t_f)=Q_f.
 \]
+\[P(t_f)=Q_f.\]
 For the non-hover nominal trajectories, the same Riccati equation is solved with the time-varying matrices \(A(t)\) and \(B(t)\) obtained from trajectory linearization.
 
 The resulting optimal physical control is recovered from the nominal input by
