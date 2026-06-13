@@ -1,13 +1,189 @@
 % !TEX root = ../main.tex
 
-\subsection{Tracking Problem Formulation}
-% TODO: Define the reference trajectory and the finite-horizon quadratic tracking objective.
+\subsection{Trajectory Tracking Formulation}
+
+In Part I, the LQR problems were formulated in terms of deviation variables
+\[
+    \delta x(t) = x(t)-x^\star(t),
+    \qquad
+    \delta u(t) = u(t)-u^\star(t),
+\]
+where \(x^\star(t)\) and \(u^\star(t)\) denote the nominal state and control trajectory about which the nonlinear dynamics are linearized. Therefore, the finite-horizon LQR problem was already written as a regulation problem for perturbations about a nominal trajectory.
+
+The trajectory tracking problem has the same fundamental structure. Let
+\[
+    x_{\mathrm{ref}}(t),
+    \qquad
+    u_{\mathrm{ref}}(t)
+\]
+denote the desired reference trajectory and reference input. The tracking error and input deviation are defined by
+\[
+    e(t) = x(t)-x_{\mathrm{ref}}(t),
+    \qquad
+    \eta(t)=u(t)-u_{\mathrm{ref}}(t).
+\]
+Equivalently, in the notation used in the previous sections, these are the deviation variables
+\[
+    e(t) \equiv \delta x(t),
+    \qquad
+    \eta(t) \equiv \delta u(t).
+\]
+Thus, the LQR tracking problem is again a finite-horizon LQR problem in deviation coordinates.
+
+The nonlinear dynamics are
+\[
+    \dot x = f(x,u).
+\]
+If the system is linearized about the reference trajectory itself, and if the reference trajectory satisfies
+\[
+    \dot x_{\mathrm{ref}}(t)=f(x_{\mathrm{ref}}(t),u_{\mathrm{ref}}(t)),
+\]
+then the first-order tracking-error dynamics are
+\[
+    \dot e(t)
+    =
+    A_{\mathrm{ref}}(t)e(t)
+    +
+    B_{\mathrm{ref}}(t)\eta(t),
+\]
+where
+\[
+    A_{\mathrm{ref}}(t)
+    =
+    \left.
+    \frac{\partial f}{\partial x}
+    \right|_{(x_{\mathrm{ref}}(t),u_{\mathrm{ref}}(t))},
+    \qquad
+    B_{\mathrm{ref}}(t)
+    =
+    \left.
+    \frac{\partial f}{\partial u}
+    \right|_{(x_{\mathrm{ref}}(t),u_{\mathrm{ref}}(t))}.
+\]
+
+In our interpretation of the problem, the linearized dynamics have already been constructed in terms of deviations from a trajectory. Therefore, the tracking formulation is not fundamentally different from the finite-horizon LQR formulation in Part I. The primary distinction is that the trajectory used to define the tracking error need not be the same as the trajectory used to compute the linearization matrices. In other words, the matrices \(A(t)\) and \(B(t)\) may be obtained from a nominal trajectory, while the cost penalizes deviation from a desired reference trajectory.
+
+To first order, we write the tracking-error dynamics as
+\[
+    \dot e(t)
+    \approx
+    A(t)e(t)+B(t)\eta(t),
+\]
+or equivalently,
+\[
+    \dot{\delta x}(t)
+    \approx
+    A(t)\delta x(t)+B(t)\delta u(t).
+\]
+This is the same mathematical form as the deviation dynamics used in Part I. Hence, the corresponding PMP and Riccati equations are identical in structure to the previous case; only the interpretation of the deviation variables changes.
 
 \subsection{PMP and Tracking Riccati Equations}
-% TODO: Derive the optimality conditions and compare with the regulation problem.
+
+The finite-horizon tracking cost is chosen as
+\[
+    J
+    =
+    \delta x(t_f)^\top Q_f \delta x(t_f)
+    +
+    \int_0^{t_f}
+    \left[
+        \delta x(t)^\top Q\delta x(t)
+        +
+        \delta u(t)^\top R\delta u(t)
+    \right]dt.
+\]
+Here \(Q\succeq 0\), \(Q_f\succeq 0\), and \(R\succ 0\). The objective penalizes tracking error and control deviation from the reference input.
+
+The Hamiltonian is
+\[
+    H
+    =
+    \delta x^\top Q\delta x
+    +
+    \delta u^\top R\delta u
+    +
+    \lambda^\top
+    \left(
+        A(t)\delta x+B(t)\delta u
+    \right).
+\]
+The PMP equations are
+\[
+    \dot{\delta x}
+    =
+    \frac{\partial H}{\partial \lambda}
+    =
+    A(t)\delta x+B(t)\delta u,
+\]
+\[
+    \dot\lambda
+    =
+    -\frac{\partial H}{\partial(\delta x)}
+    =
+    -2Q\delta x-A(t)^\top \lambda,
+\]
+with terminal condition
+\[
+    \lambda(t_f)=2Q_f\delta x(t_f).
+\]
+The stationarity condition is
+\[
+    0=\frac{\partial H}{\partial(\delta u)}
+    =
+    2R\delta u+B(t)^\top\lambda.
+\]
+Therefore,
+\[
+    \delta u^\star(t)
+    =
+    -\frac{1}{2}R^{-1}B(t)^\top\lambda(t).
+\]
+
+Using the quadratic ansatz
+\[
+    \lambda(t)=2P(t)\delta x(t),
+\]
+we obtain the differential Riccati equation
+\[
+\small
+\begin{aligned}
+-\dot P(t)
+&=
+A(t)^\top P(t)+P(t)A(t) \\
+&\quad
+-P(t)B(t)R^{-1}B(t)^\top P(t)
++Q,
+\end{aligned}
+\]
+with terminal condition
+\[
+    P(t_f)=Q_f.
+\]
+The optimal tracking feedback law is then
+\[
+    \delta u^\star(t)
+    =
+    -K(t)\delta x(t),
+    \qquad
+    K(t)=R^{-1}B(t)^\top P(t).
+\]
+Finally, the physical control applied to the nonlinear system is recovered as
+\[
+    u^\star_{\mathrm{phys}}(t)
+    =
+    u_{\mathrm{ref}}(t)+\delta u^\star(t).
+\]
+
+If the linearization trajectory and the reference trajectory are not exactly the same, then a more exact first-order tracking-error model contains an additional affine forcing term:
+\[
+    \dot e(t)
+    =
+    A(t)e(t)+B(t)\eta(t)+d(t).
+\]
+In this report, we use the deviation-coordinate interpretation above and focus on the homogeneous tracking-error model. Under this interpretation, the PMP equations and Riccati equation are identical to those derived in Part I.
 
 \subsection{Numerical Tracking Results}
-% TODO: Discuss tracking performance, transient response, control effort, and robustness.
+% TODO: Discuss tracking performance, transient response, control effort, and robustness once the simulation outputs are generated.
 
 \subsection{Discussion: Reference Trajectory Availability}
 % TODO: Discuss limitations when the reference trajectory is not known in advance.
