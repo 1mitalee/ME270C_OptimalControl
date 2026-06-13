@@ -61,129 +61,28 @@ where
     \right|_{(x_{\mathrm{ref}}(t),u_{\mathrm{ref}}(t))}.
 \]
 
-In our interpretation of the problem, the linearized dynamics have already been constructed in terms of deviations from a trajectory. Therefore, the tracking formulation is not fundamentally different from the finite-horizon LQR formulation in Part I. The primary distinction is that the trajectory used to define the tracking error need not be the same as the trajectory used to compute the linearization matrices. In other words, the matrices \(A(t)\) and \(B(t)\) may be obtained from a nominal trajectory, while the cost penalizes deviation from a desired reference trajectory.
-
-To first order, we write the tracking-error dynamics as
-\[
-    \dot e(t)
-    \approx
-    A(t)e(t)+B(t)\eta(t),
-\]
-or equivalently,
-\[
-    \dot{\delta x}(t)
-    \approx
-    A(t)\delta x(t)+B(t)\delta u(t).
-\]
-This is the same mathematical form as the deviation dynamics used in Part I. Hence, the corresponding PMP and Riccati equations are identical in structure to the previous case; only the interpretation of the deviation variables changes.
 
 \subsection{PMP and Tracking Riccati Equations}
+In our interpretation of the problem, the linearized dynamics have already been constructed in terms of deviations from a trajectory. Therefore, the tracking formulation is not fundamentally different from the finite-horizon LQR formulation in Part I. The primary distinction is that the trajectory used to define the tracking error need not be the same as the trajectory used to compute the linearization matrices. In other words, the matrices \(A(t)\) and \(B(t)\) may be obtained from a nominal trajectory, while the cost penalizes deviation from a desired reference trajectory.
 
-The finite-horizon tracking cost is chosen as
-\[
-    J
-    =
-    \delta x(t_f)^\top Q_f \delta x(t_f)
-    +
-    \int_0^{t_f}
-    \left[
-        \delta x(t)^\top Q\delta x(t)
-        +
-        \delta u(t)^\top R\delta u(t)
-    \right]dt.
-\]
-Here \(Q\succeq 0\), \(Q_f\succeq 0\), and \(R\succ 0\). The objective penalizes tracking error and control deviation from the reference input.
 
-The Hamiltonian is
-\[
-    H
-    =
-    \delta x^\top Q\delta x
-    +
-    \delta u^\top R\delta u
-    +
-    \lambda^\top
-    \left(
-        A(t)\delta x+B(t)\delta u
-    \right).
-\]
-The PMP equations are
-\[
-    \dot{\delta x}
-    =
-    \frac{\partial H}{\partial \lambda}
-    =
-    A(t)\delta x+B(t)\delta u,
-\]
-\[
-    \dot\lambda
-    =
-    -\frac{\partial H}{\partial(\delta x)}
-    =
-    -2Q\delta x-A(t)^\top \lambda,
-\]
-with terminal condition
-\[
-    \lambda(t_f)=2Q_f\delta x(t_f).
-\]
-The stationarity condition is
-\[
-    0=\frac{\partial H}{\partial(\delta u)}
-    =
-    2R\delta u+B(t)^\top\lambda.
-\]
-Therefore,
-\[
-    \delta u^\star(t)
-    =
-    -\frac{1}{2}R^{-1}B(t)^\top\lambda(t).
-\]
 
-Using the quadratic ansatz
-\[
-    \lambda(t)=2P(t)\delta x(t),
-\]
-we obtain the differential Riccati equation
-\[
-\small
-\begin{aligned}
--\dot P(t)
-&=
-A(t)^\top P(t)+P(t)A(t) \\
-&\quad
--P(t)B(t)R^{-1}B(t)^\top P(t)
-+Q,
-\end{aligned}
-\]
-with terminal condition
-\[
-    P(t_f)=Q_f.
-\]
-The optimal tracking feedback law is then
-\[
-    \delta u^\star(t)
-    =
-    -K(t)\delta x(t),
-    \qquad
-    K(t)=R^{-1}B(t)^\top P(t).
-\]
-Finally, the physical control applied to the nonlinear system is recovered as
-\[
-    u^\star_{\mathrm{phys}}(t)
-    =
-    u_{\mathrm{ref}}(t)+\delta u^\star(t).
-\]
-
-If the linearization trajectory and the reference trajectory are not exactly the same, then a more exact first-order tracking-error model contains an additional affine forcing term:
-\[
-    \dot e(t)
-    =
-    A(t)e(t)+B(t)\eta(t)+d(t).
-\]
-In this report, we use the deviation-coordinate interpretation above and focus on the homogeneous tracking-error model. Under this interpretation, the PMP equations and Riccati equation are identical to those derived in Part I.
-
-\subsection{Numerical Tracking Results}
-% TODO: Discuss tracking performance, transient response, control effort, and robustness once the simulation outputs are generated.
+\subsection{Numerical Tracking Results} 
+Figure~\ref{fig:tracking-position} shows the resulting trajectory in the physical \((p_x,p_z)\)-plane. trajectory begins far from the reference, but moves toward the reference terminal region over the finite horizon. 
+\begin{figure}[H] 
+\centering
+\includegraphics[width=0.4\textwidth]{sections/PART6/tracking_position.png} 
+\caption{Reference and tracked trajectories in the physical 
+\((p_x,p_z)\)-plane for the hover-LTI tracking experiment.} 
+\label{fig:tracking-position}
+\end{figure} 
+The tracking-error components are shown in Figure~\ref{fig:tracking-errors}. The horizontal and vertical position errors \(e_{p_x}\) and \(e_{p_z}\) decrease substantially over the horizon. In particular, the position errors are close to zero near the terminal time, which indicates that the controller is effective at driving the tracked trajectory toward the reference trajectory in position space. 
+\begin{figure}[H] \centering \includegraphics[width=0.4\textwidth]{sections/PART6/tracking_errors.png} \caption{Tracking-error components \(e(t)=\delta x(t)-\delta x_{\mathrm{ref}}(t)\).} \label{fig:tracking-errors} \end{figure}
+The velocity and attitude errors show a more oscillatory response. The horizontal velocity error initially increases before decreasing, while the vertical velocity error becomes negative and remains nonzero at the final time. Similarly, the attitude and angular-velocity errors exhibit transient oscillations. This behavior is expected because the hover linearization controls horizontal motion indirectly through the attitude dynamics. 
+Therefore, correcting large position errors requires nontrivial attitude and angular-velocity corrections. Figure~\ref{fig:tracking-correction-controls} shows the correction controls \[ v(t)=\delta u(t)-\delta u_{\mathrm{ref}}(t). \]
+\begin{figure}[H] \centering \includegraphics[width=0.4\textwidth]{sections/PART6/tracking_correction_controls.png} \caption{Tracking correction controls \(v(t)=\delta u(t)-\delta u_{\mathrm{ref}}(t)\).} \label{fig:tracking-correction-controls} \end{figure} \begin{figure}[H] \centering \includegraphics[width=0.4\textwidth]{sections/PART6/tracking_true_controls.png} \caption{Physical controls obtained after adding the reference input and hover trim input.} \label{fig:tracking-true-controls} \end{figure} 
 
 \subsection{Discussion: Reference Trajectory Availability}
 % TODO: Discuss limitations when the reference trajectory is not known in advance.
+
+If the reference trajectory is available only online, the tracking problem should be interpreted in a receding-horizon sense. At each time, the controller uses the currently available reference information to define the error and computes a correction. If a short future reference window is available, the same finite-horizon Riccati/PMP equations are solved repeatedly on a moving horizon. If only the instantaneous reference is available, then the controller becomes a causal local tracking controller rather than a full finite-horizon optimal tracker.
