@@ -4,7 +4,8 @@
 
 In the previous linearized problems, the state and input penalties were imposed on deviation variables rather than on the absolute physical state and input. We follow the same convention in the nonlinear near-hover problem. Thus, although the dynamics are kept nonlinear, the objective penalizes deviations from the chosen hover trim condition. This makes the nonlinear problem directly comparable with the LQR regulation and tracking formulations studied earlier.
 
-We consider the exact nonlinear variable-mass dynamics under three simplifying assumptions: the trajectory remains near hover, the attitude angles remain moderate, and the maneuver duration is short enough that the vehicle mass does not change by a large fraction of its initial value. 
+We consider the exact nonlinear variable-mass dynamics under three simplifying assumptions: the trajectory remains near hover, the attitude angles remain moderate, and the maneuver duration is short enough that the vehicle mass does not change by a large fraction of its initial value.
+
 \subsection{Nonlinear PMP in Deviation Coordinates}
 
 Define the deviation variables
@@ -19,7 +20,7 @@ The hover state and input are
     &=
     \begin{bmatrix}
         p_{x,h} & p_{z,h} & 0 & 0 & 0 & 0 & m_h
-    \end{bmatrix}^{\top}\\
+    \end{bmatrix}^{\top},\\
     u_{\mathrm{hover}}
     &=
     \begin{bmatrix}
@@ -53,7 +54,9 @@ The physical variables are recovered as
     \qquad
     \tau = \delta\tau,
     \qquad
-    m = m_h + \delta m.
+    m = m_h + \delta m,
+    \qquad
+    \theta = \delta\theta.
 \end{equation}
 
 The nonlinear deviation dynamics are
@@ -88,9 +91,9 @@ The cost functional is
     =
     \int_0^{t_f}
     \left(
-        z^{\top}Qz
+        \delta x^{\top}Q\delta x
         +
-        v^{\top}Rv
+        \delta u^{\top}R\delta u
     \right)\,dt.
 \end{equation}
 Let the costate be
@@ -111,9 +114,9 @@ The Hamiltonian is
 \begin{align}
     H
     &=
-    z^{\top}Qz
+    \delta x^{\top}Q\delta x
     +
-    v^{\top}Rv
+    \delta u^{\top}R\delta u
     +
     \lambda_{p_x}\delta v_x
     +
@@ -142,68 +145,68 @@ The Hamiltonian is
 \end{align}
 The state equations are
 \begin{equation}
-    \dot z = \frac{\partial H}{\partial \lambda}.
+    \dot{\delta x} = \frac{\partial H}{\partial \lambda}.
 \end{equation}
 The costate equations are
 \begin{equation}
-    \dot\lambda = -\frac{\partial H}{\partial z}.
+    \dot\lambda = -\frac{\partial H}{\partial (\delta x)}.
 \end{equation}
 Equivalently,
 \begin{align}
     \dot\lambda_{p_x}
     &=
-    -2(Qz)_{p_x}, \\
+    -2(Q\delta x)_{p_x}, \\
     \dot\lambda_{p_z}
     &=
-    -2(Qz)_{p_z}, \\
+    -2(Q\delta x)_{p_z}, \\
     \dot\lambda_{v_x}
     &=
-    -2(Qz)_{v_x}
+    -2(Q\delta x)_{v_x}
     -
     \lambda_{p_x}, \\
     \dot\lambda_{v_z}
     &=
-    -2(Qz)_{v_z}
+    -2(Q\delta x)_{v_z}
     -
     \lambda_{p_z}, \\
     \dot\lambda_{\theta}
     &=
-    -2(Qz)_{\theta}
+    -2(Q\delta x)_{\theta}
     -
     \lambda_{v_x}
     \frac{m_h g+\delta T}{m_h+\delta m}
-    \cos(\delta\theta) \\
-    &+
+    \cos(\delta\theta)
+    +
     \lambda_{v_z}
     \frac{m_h g+\delta T}{m_h+\delta m}
-    \sin(\delta\theta), \\  \nonumber
+    \sin(\delta\theta), \\
     \dot\lambda_{\omega}
     &=
-    -2(Qz)_{\omega}
+    -2(Q\delta x)_{\omega}
     -
     \lambda_{\theta}, \\
     \dot\lambda_m
     &=
-    -2(Qz)_m
+    -2(Q\delta x)_m
     +
     \lambda_{v_x}
     \frac{m_h g+\delta T}{(m_h+\delta m)^2}
-    \sin(\delta\theta) \\
-    &+
+    \sin(\delta\theta)
+    +
     \lambda_{v_z}
     \frac{m_h g+\delta T}{(m_h+\delta m)^2}
-    \cos(\delta\theta).  \nonumber
+    \cos(\delta\theta).
 \end{align}
 
 The stationarity condition is
 \begin{equation}
-    0 = \frac{\partial H}{\partial v}.
+    0 = \frac{\partial H}{\partial (\delta u)}.
 \end{equation}
 Thus,
 \begin{equation}
     0
     =
-    2Rv
+    2R\delta u
     +
     \begin{bmatrix}
         \dfrac{1}{m_h+\delta m}
@@ -268,31 +271,31 @@ With control bounds, the constrained optimal controls are obtained by clipping t
 
 The boundary conditions are
 \begin{equation}
-    z(0)=x_0-x_{\mathrm{hover}},
+    \delta x(0)=x_0-x_{\mathrm{hover}},
     \qquad
     \lambda(t_f)=0.
 \end{equation}
 The resulting two-point boundary value problem is
 \begin{equation}
     \begin{bmatrix}
-        \dot z \\
+        \dot{\delta x} \\
         \dot\lambda
     \end{bmatrix}
     =
     \begin{bmatrix}
         \dfrac{\partial H}{\partial \lambda} \\
-        -\dfrac{\partial H}{\partial z}
+        -\dfrac{\partial H}{\partial (\delta x)}
     \end{bmatrix},
     \qquad
-    z(0)=x_0-x_{\mathrm{hover}},
+    \delta x(0)=x_0-x_{\mathrm{hover}},
     \qquad
     \lambda(t_f)=0.
 \end{equation}
 The physical trajectory and control are recovered by
 \begin{equation}
-    x(t)=x_{\mathrm{hover}}+z(t),
+    x(t)=x_{\mathrm{hover}}+\delta x(t),
     \qquad
-    u(t)=u_{\mathrm{hover}}+v(t).
+    u(t)=u_{\mathrm{hover}}+\delta u(t).
 \end{equation}
 Equivalently,
 \begin{equation}
