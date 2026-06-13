@@ -4,34 +4,32 @@
 
 In the previous linearized problems, the state and input penalties were imposed on deviation variables rather than on the absolute physical state and input. We follow the same convention in the nonlinear near-hover problem. Thus, although the dynamics are kept nonlinear, the objective penalizes deviations from the chosen hover trim condition. This makes the nonlinear problem directly comparable with the LQR regulation and tracking formulations studied earlier.
 
-We consider the exact nonlinear variable-mass dynamics under three simplifying assumptions: the trajectory remains near hover, the attitude angles remain moderate, and the maneuver duration is short enough that the vehicle mass does not change by a large fraction of its initial value. These assumptions keep the nonlinear indirect optimal control problem numerically manageable while still retaining the translational--rotational coupling and the effect of mass depletion.
-
+We consider the exact nonlinear variable-mass dynamics under three simplifying assumptions: the trajectory remains near hover, the attitude angles remain moderate, and the maneuver duration is short enough that the vehicle mass does not change by a large fraction of its initial value. 
 \subsection{Nonlinear PMP in Deviation Coordinates}
 
 Define the deviation variables
 \begin{equation}
-    z = x - x_{\mathrm{hover}},
+    \delta x = x - x_{\mathrm{hover}},
     \qquad
-    v = u - u_{\mathrm{hover}}.
+    \delta u = u - u_{\mathrm{hover}}.
 \end{equation}
 The hover state and input are
-\begin{equation}
+\begin{align}
     x_{\mathrm{hover}}
-    =
+    &=
     \begin{bmatrix}
         p_{x,h} & p_{z,h} & 0 & 0 & 0 & 0 & m_h
-    \end{bmatrix}^{\top},
-    \qquad
+    \end{bmatrix}^{\top}\\
     u_{\mathrm{hover}}
-    =
+    &=
     \begin{bmatrix}
         m_h g & 0
     \end{bmatrix}^{\top}.
-\end{equation}
+\end{align}
 Thus,
-\begin{equation}
-    z
-    =
+\begin{align}
+    \delta x
+    &=
     \begin{bmatrix}
         \delta p_x &
         \delta p_z &
@@ -41,23 +39,21 @@ Thus,
         \delta\omega &
         \delta m
     \end{bmatrix}^{\top},
-    \qquad
-    v
-    =
+    \\
+    \delta u
+    &=
     \begin{bmatrix}
         \delta T &
         \delta\tau
     \end{bmatrix}^{\top}.
-\end{equation}
+\end{align}
 The physical variables are recovered as
 \begin{equation}
     T = m_h g + \delta T,
     \qquad
     \tau = \delta\tau,
     \qquad
-    m = m_h + \delta m,
-    \qquad
-    \theta = \delta\theta.
+    m = m_h + \delta m.
 \end{equation}
 
 The nonlinear deviation dynamics are
@@ -176,11 +172,11 @@ Equivalently,
     -
     \lambda_{v_x}
     \frac{m_h g+\delta T}{m_h+\delta m}
-    \cos(\delta\theta)
-    +
+    \cos(\delta\theta) \\
+    &+
     \lambda_{v_z}
     \frac{m_h g+\delta T}{m_h+\delta m}
-    \sin(\delta\theta), \\
+    \sin(\delta\theta), \\  \nonumber
     \dot\lambda_{\omega}
     &=
     -2(Qz)_{\omega}
@@ -192,11 +188,11 @@ Equivalently,
     +
     \lambda_{v_x}
     \frac{m_h g+\delta T}{(m_h+\delta m)^2}
-    \sin(\delta\theta)
-    +
+    \sin(\delta\theta) \\
+    &+
     \lambda_{v_z}
     \frac{m_h g+\delta T}{(m_h+\delta m)^2}
-    \cos(\delta\theta).
+    \cos(\delta\theta).  \nonumber
 \end{align}
 
 The stationarity condition is
