@@ -167,7 +167,212 @@ For hover, \(T^\star=m_hg\) and \(\tau^\star=0\). For a general nominal trajecto
 
 \subsection{Numerical Results and Interpretation}
 
-% TODO: Present state/control trajectories, cost comparisons, control effort, and sensitivity results.
-% TODO: Compare different diagonal choices of Q, R, and Q_f.
-% TODO: Discuss which weights produce well-behaved trajectories and which weights lead to aggressive or weak control.
-% TODO: Compare sensitivity to initial condition error and control energy for hover versus weakly controllable trajectories.
+We next compare the hover LQR solution under several choices of the weighting matrices \(Q\), \(R\), and \(Q_f\). The purpose of this experiment is not only to solve one LQR instance, but also to understand how the relative weights on state deviation, terminal error, and control effort affect the resulting closed-loop behavior.
+
+All simulations are performed over the fixed time interval
+\[
+    t\in[0,5],
+\]
+using \(501\) uniformly spaced time points. The hover trim state used for this experiment is
+\[
+    x^\star
+    =
+    \begin{bmatrix}
+        0 & 200 & 0 & 0 & 0 & 0 & 20
+    \end{bmatrix}^{\top}.
+\]
+The initial perturbation from hover is
+\[
+    \delta x(0)
+    =
+    \begin{bmatrix}
+        10 &
+        20 &
+        -5 &
+        5 &
+        5^\circ &
+        2.5^\circ &
+        0.5
+    \end{bmatrix}^{\top},
+\]
+where angular quantities are converted to radians in the numerical implementation. The physical initial state is therefore \(x(0)=x^\star+\delta x(0)\), so the reconstructed position starts from \((p_x(0),p_z(0))=(10,220)\).
+
+For comparison with the non-hover linearizations considered in Section~1.2, the same configuration file also defines the nominal descent initial condition
+\[
+    x_{\mathrm{nom}}(0)
+    =
+    \begin{bmatrix}
+        0 & 200 & 100 & -20 & 0 & 0 & 20
+    \end{bmatrix}^{\top}.
+\]
+The nominal thrust is chosen as
+\[
+    T_{\mathrm{nom}} = mg(1+\beta),
+    \qquad
+    \beta=0.05.
+\]
+For the attitude-coupled nominal trajectory, the prescribed attitude is
+\[
+    \theta^\star(t)=a\sin(bt),
+    \qquad
+    a=5^\circ,
+    \qquad
+    b=1.
+\]
+The present subsection focuses on the hover LQR case; the non-hover trajectories are used later for the controllability comparison.
+
+\subsubsection{Weighting matrices}
+
+The baseline weighting matrices are chosen using inverse-square normalization. If \(s_i\) denotes the reference scale for the \(i\)-th state component and \(r_j\) denotes the reference scale for the \(j\)-th input component, then
+\[
+    Q_{\mathrm{base}}
+    =
+    \operatorname{diag}\left(\frac{1}{s_1^2},\ldots,\frac{1}{s_7^2}\right),
+    \qquad
+    R_{\mathrm{base}}
+    =
+    \operatorname{diag}\left(\frac{1}{r_1^2},\frac{1}{r_2^2}\right).
+\]
+The baseline terminal cost is
+\[
+    Q_{f,\mathrm{base}} = 10Q_{\mathrm{base}}.
+\]
+We compare five choices:
+\[
+\begin{array}{c|c|c|c}
+\text{Case} & Q & R & Q_f \\
+\hline
+\texttt{baseline\_normalized}
+&
+Q_{\mathrm{base}}
+&
+R_{\mathrm{base}}
+&
+10Q_{\mathrm{base}}
+\\
+\texttt{high\_terminal\_penalty}
+&
+Q_{\mathrm{base}}
+&
+R_{\mathrm{base}}
+&
+50Q_{\mathrm{base}}
+\\
+\texttt{high\_position\_attitude\_penalty}
+&
+Q_{\mathrm{pa}}
+&
+R_{\mathrm{base}}
+&
+10Q_{\mathrm{base}}
+\\
+\texttt{high\_control\_penalty}
+&
+Q_{\mathrm{base}}
+&
+10R_{\mathrm{base}}
+&
+10Q_{\mathrm{base}}
+\\
+\texttt{low\_control\_penalty}
+&
+Q_{\mathrm{base}}
+&
+0.1R_{\mathrm{base}}
+&
+10Q_{\mathrm{base}}
+\end{array}
+\]
+where \(Q_{\mathrm{pa}}\) is obtained from \(Q_{\mathrm{base}}\) by multiplying the running penalties on \(p_x\), \(p_z\), and \(\theta\) by a factor of \(10\).
+
+\subsubsection{Trajectory comparison}
+
+Figure~\ref{fig:hover-physical-trajectory} shows the reconstructed physical trajectories in the \((p_x,p_z)\)-plane. All trajectories start from the same perturbed physical initial state, so the differences are due only to the choices of \(Q\), \(R\), and \(Q_f\).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_physical_position_trajectory.png}
+    \caption{Reconstructed physical trajectories for the hover LQR experiment under different weighting matrices.}
+    \label{fig:hover-physical-trajectory}
+\end{figure}
+
+The baseline normalized controller gives a moderate response. The high-control-penalty case is the most conservative: since control effort is expensive, both \(\delta T\) and \(\delta\tau\) remain relatively small, and the state deviations are corrected slowly. In contrast, the low-control-penalty case uses larger thrust and torque corrections and produces a more aggressive response. The high-terminal-penalty case also produces aggressive transient behavior because it places more emphasis on reducing the final deviation at \(t_f\).
+
+\subsubsection{State deviation histories}
+
+Figures~\ref{fig:hover-delta-px}--\ref{fig:hover-delta-m} show the time histories of the state deviations. The horizontal position deviation \(\delta p_x\) increases for all cases because the initial horizontal velocity deviation is significant. However, the high-terminal-penalty controller reduces \(\delta v_x\) most aggressively and therefore produces the smallest terminal horizontal-position deviation among the tested cases. The high-control-penalty case keeps the control effort small, so the horizontal velocity remains comparatively large and the horizontal position continues to drift.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_p_x.png}
+    \caption{Horizontal position deviation \(\delta p_x(t)\) for the hover LQR experiment.}
+    \label{fig:hover-delta-px}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_v_x.png}
+    \caption{Horizontal velocity deviation \(\delta v_x(t)\) for the hover LQR experiment.}
+    \label{fig:hover-delta-vx}
+\end{figure}
+
+The vertical response is more directly affected by thrust. The plots of \(\delta p_z\) and \(\delta v_z\) show that reducing the control penalty permits larger thrust deviations and a more aggressive correction of vertical motion. Increasing the control penalty produces smoother input histories, but leaves larger vertical-position error over the finite horizon.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_p_z.png}
+    \caption{Vertical position deviation \(\delta p_z(t)\) for the hover LQR experiment.}
+    \label{fig:hover-delta-pz}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_v_z.png}
+    \caption{Vertical velocity deviation \(\delta v_z(t)\) for the hover LQR experiment.}
+    \label{fig:hover-delta-vz}
+\end{figure}
+
+The attitude and angular velocity histories show the mechanism by which horizontal corrections are generated near hover. Since horizontal acceleration is produced primarily by tilting the thrust vector, the LQR controller uses torque to shape \(\delta\theta\) and \(\delta\omega\). Penalizing attitude more heavily keeps \(\delta\theta\) closer to zero, but this can also reduce the controller's ability to generate horizontal acceleration over a short horizon.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_theta.png}
+    \caption{Attitude deviation \(\delta\theta(t)\) for the hover LQR experiment.}
+    \label{fig:hover-delta-theta}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_omega.png}
+    \caption{Angular velocity deviation \(\delta\omega(t)\) for the hover LQR experiment.}
+    \label{fig:hover-delta-omega}
+\end{figure}
+
+The mass deviation \(\delta m\) is measured relative to the nominal hover trajectory. Therefore, positive \(\delta m\) should not be interpreted as an increasing physical mass. Rather, it means that the trajectory has consumed less fuel than the nominal hover reference over that portion of the interval. This is consistent with the cases in which \(\delta T\) is negative for a significant part of the maneuver.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_m.png}
+    \caption{Mass deviation \(\delta m(t)\) for the hover LQR experiment.}
+    \label{fig:hover-delta-m}
+\end{figure}
+
+\subsubsection{Control histories}
+
+Figures~\ref{fig:hover-delta-T} and~\ref{fig:hover-delta-tau} show the thrust and torque deviations. These plots make the tradeoff between performance and control effort explicit. The high-control-penalty case has the smallest control magnitudes and the slowest state correction. The low-control-penalty case uses the largest initial control magnitudes, especially in torque, and produces a more aggressive state response. The baseline and high-position-attitude-penalty cases lie between these two extremes.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_T.png}
+    \caption{Thrust deviation \(\delta T(t)\) for the hover LQR experiment.}
+    \label{fig:hover-delta-T}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_tau.png}
+    \caption{Torque deviation \(\delta\tau(t)\) for the hover LQR experiment.}
+    \label{fig:hover-delta-tau}
+\end{figure}
+
+Overall, these simulations show the expected LQR tradeoff. Increasing the terminal penalty encourages stronger correction near the end of the horizon. Increasing the control penalty produces smoother but less corrective behavior. Decreasing the control penalty allows aggressive inputs and faster state response, but at the cost of larger thrust and torque deviations. The normalized baseline provides a balanced reference configuration for subsequent comparisons.
