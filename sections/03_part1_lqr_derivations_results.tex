@@ -126,16 +126,6 @@ with terminal condition
 \[
     P(t_f)=Q_f.
 \]
-For the frozen-mass hover linearization, \(A(t)=A\) and \(B(t)=B\), so the Riccati equation reduces to the standard finite-horizon LTI Riccati equation
-\[
-    -\dot P(t)
-    =
-    A^\top P(t)+P(t)A
-    -P(t)BR^{-1}B^\top P(t)
-    +Q,
-\]
-\[P(t_f)=Q_f.\]
-For the non-hover nominal trajectories, the same Riccati equation is solved with the time-varying matrices \(A(t)\) and \(B(t)\) obtained from trajectory linearization.
 
 The resulting optimal physical control is recovered from the nominal input by
 \[
@@ -249,7 +239,7 @@ Figure~\ref{fig:hover-physical-trajectory} shows the reconstructed physical traj
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_physical_position_trajectory.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_physical_position_trajectory.png}
     \caption{Reconstructed physical trajectories for the hover LQR experiment under different weighting matrices.}
     \label{fig:hover-physical-trajectory}
 \end{figure}
@@ -262,14 +252,14 @@ Figures~\ref{fig:hover-delta-px}--\ref{fig:hover-delta-m} show the time historie
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_p_x.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_delta_p_x.png}
     \caption{Horizontal position deviation \(\delta p_x(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-px}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_v_x.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_delta_v_x.png}
     \caption{Horizontal velocity deviation \(\delta v_x(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-vx}
 \end{figure}
@@ -278,35 +268,35 @@ The vertical response is more directly affected by thrust. The plots of \(\delta
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_p_z.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_delta_p_z.png}
     \caption{Vertical position deviation \(\delta p_z(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-pz}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_v_z.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_delta_v_z.png}
     \caption{Vertical velocity deviation \(\delta v_z(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-vz}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_theta.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_delta_theta.png}
     \caption{Attitude deviation \(\delta\theta(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-theta}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_omega.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_delta_omega.png}
     \caption{Angular velocity deviation \(\delta\omega(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-omega}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_m.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_delta_m.png}
     \caption{Mass deviation \(\delta m(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-m}
 \end{figure}
@@ -317,14 +307,14 @@ Figures~\ref{fig:hover-delta-T} and~\ref{fig:hover-delta-tau} show the thrust an
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_T.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_delta_T.png}
     \caption{Thrust deviation \(\delta T(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-T}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_tau.png}
+    \includegraphics[width=0.70\columnwidth]{sections/PART5B/hover_delta_tau.png}
     \caption{Torque deviation \(\delta\tau(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-tau}
 \end{figure}
