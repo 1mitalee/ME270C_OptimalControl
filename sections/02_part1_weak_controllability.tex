@@ -6,7 +6,6 @@ In the previous subsection, we studied the linearized dynamics around the hover 
 
 We consider three cases for comparison:
 \begin{enumerate}
-    \item the frozen-mass hover linearization,
     \item a nominal descent trajectory with thrust close to hover and zero torque,
     \item a nominal descent trajectory with a prescribed small attitude oscillation, which introduces additional coupling between rotational and translational motion.
 \end{enumerate}
@@ -117,19 +116,16 @@ with
 \]
 The initial condition is
 \[
-    x^\star(0)
-    =
-    \begin{bmatrix}
-        0 & 100 & 100 & -20 & 0 & 0 & 20
-    \end{bmatrix}^{\top}.
+x(0) = (0, 200, 100, -20, 0, 0, 20)
 \]
+
 Since the torque is zero and the initial attitude and angular velocity are zero, the nominal attitude remains
 \[
     \theta^\star(t)=0,
     \qquad
     \omega^\star(t)=0.
 \]
-Thus the nominal motion has large horizontal velocity, downward vertical velocity, and thrust slightly above the hover value. The horizontal motion is not generated directly by thrust, since the thrust vector remains aligned with the vertical axis. Horizontal corrections can only be produced indirectly through attitude perturbations.
+The horizontal motion is not generated directly by thrust, since the thrust vector remains aligned with the vertical axis. Horizontal corrections can only be produced indirectly through attitude perturbations.
 
 Along this trajectory, the Jacobian matrices simplify because \(\theta^\star=0\). In particular,
 \[
@@ -149,20 +145,7 @@ while
 \[
     \frac{\partial \dot v_x}{\partial T}=0.
 \]
-This means that horizontal acceleration is not directly actuated by thrust perturbations. Instead, a torque perturbation must first change angular acceleration, then angular velocity, then attitude, and only then horizontal acceleration. This creates an indirect actuation chain
-\[
-    \delta \tau
-    \longrightarrow
-    \delta\omega
-    \longrightarrow
-    \delta\theta
-    \longrightarrow
-    \delta v_x
-    \longrightarrow
-    \delta p_x.
-\]
-As a result, horizontal position is expected to be more weakly controllable over short horizons than vertical motion.
-
+This means that horizontal acceleration is not directly actuated by thrust perturbations. Instead, a torque perturbation must first change angular acceleration, then angular velocity, then attitude, and only then horizontal acceleration. 
 \subsubsection{Nominal trajectory with prescribed attitude coupling}
 
 For the second non-hover trajectory, we prescribe a small attitude variation
@@ -252,13 +235,13 @@ To compare the three cases, we compute the eigenvalues or singular values of the
     \lambda_{\min}(W_c)
 \]
 provides a measure of the least controllable direction over the finite horizon. A small value of \(\lambda_{\min}(W_c)\) indicates that some direction in state space requires a large amount of control energy to excite. We therefore compare
-\[
-    \lambda_{\min}(W_{c,\mathrm{hover}}),
-    \qquad
-    \lambda_{\min}(W_{c,\mathrm{zero\ torque}}),
-    \qquad
-    \lambda_{\min}(W_{c,\mathrm{attitude\ coupled}}),
-\]
+\begin{equation}
+\begin{aligned}
+    &\lambda_{\min}(W_{c,\mathrm{hover}}), \\
+    &\lambda_{\min}(W_{c,\mathrm{zero\ torque}}), \\
+    &\lambda_{\min}(W_{c,\mathrm{attitude\ coupled}}).
+\end{aligned}
+\end{equation}
 together with the corresponding condition numbers of the Gramians.
 
 Physically, weak controllability arises because horizontal motion is affected only indirectly through attitude. Vertical motion is directly influenced by thrust perturbations, and angular motion is directly influenced by torque perturbations. In contrast, horizontal position requires a sequence of dynamical couplings: torque must change attitude, attitude must rotate the thrust direction, and the rotated thrust must then produce horizontal acceleration. Over a short finite horizon, this chain of integrations makes the horizontal direction more difficult to control. The second nominal trajectory partially alleviates this by introducing a nonzero nominal attitude, which allows thrust perturbations to have an immediate horizontal component. However, because the attitude angles remain small, this direct horizontal thrust component is still weak.
