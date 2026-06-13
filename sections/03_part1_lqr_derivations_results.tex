@@ -113,12 +113,15 @@ and the closed-loop linearized dynamics are
 
 Here, the matrix P(t) satisfies the matrix Riccati equation,
 \[
-    -\dot P(t)
-    =
-    A(t)^\top P(t)+P(t)A(t)
-    -P(t)B(t)R^{-1}B(t)^\top P(t)
-    +Q,
+\small
+\begin{aligned}
+-\dot P(t)
+&= A(t)^\top P(t)+P(t)A(t) \\
+&\quad -P(t)B(t)R^{-1}B(t)^\top P(t) \\
+&\quad + Q .
+\end{aligned}
 \]
+
 with terminal condition
 \[
     P(t_f)=Q_f.
@@ -180,28 +183,28 @@ The initial perturbation from hover is
 \]
 where angular quantities are converted to radians in the numerical implementation. The physical initial state is therefore \(x(0)=x^\star+\delta x(0)\), so the reconstructed position starts from \((p_x(0),p_z(0))=(10,220)\).
 
-For comparison with the non-hover linearizations considered in Section~1.2, the same configuration file also defines the nominal descent initial condition
-\[
-    x_{\mathrm{nom}}(0)
-    =
-    \begin{bmatrix}
-        0 & 200 & 100 & -20 & 0 & 0 & 20
-    \end{bmatrix}^{\top}.
-\]
-The nominal thrust is chosen as
-\[
-    T_{\mathrm{nom}} = mg(1+\beta),
-    \qquad
-    \beta=0.05.
-\]
-For the attitude-coupled nominal trajectory, the prescribed attitude is
-\[
-    \theta^\star(t)=a\sin(bt),
-    \qquad
-    a=5^\circ,
-    \qquad
-    b=1.
-\]
+% For comparison with the non-hover linearizations considered in Section~1.2, the same configuration file also defines the nominal descent initial condition
+% \[
+%     x_{\mathrm{nom}}(0)
+%     =
+%     \begin{bmatrix}
+%         0 & 200 & 100 & -20 & 0 & 0 & 20
+%     \end{bmatrix}^{\top}.
+% \]
+% The nominal thrust is chosen as
+% \[
+%     T_{\mathrm{nom}} = mg(1+\beta),
+%     \qquad
+%     \beta=0.05.
+% \]
+% For the attitude-coupled nominal trajectory, the prescribed attitude is
+% \[
+%     \theta^\star(t)=a\sin(bt),
+%     \qquad
+%     a=5^\circ,
+%     \qquad
+%     b=1.
+% \]
 The present subsection focuses on the hover LQR case; the non-hover trajectories are used later for the controllability comparison.
 
 \subsubsection{Weighting matrices}
@@ -221,51 +224,23 @@ The baseline terminal cost is
     Q_{f,\mathrm{base}} = 10Q_{\mathrm{base}}.
 \]
 We compare five choices:
-\[
-\begin{array}{c|c|c|c}
-\text{Case} & Q & R & Q_f \\
+\begin{table}[htbp]
+\centering
+\scriptsize
+\begin{tabular}{lccc}
 \hline
-\texttt{baseline\_normalized}
-&
-Q_{\mathrm{base}}
-&
-R_{\mathrm{base}}
-&
-10Q_{\mathrm{base}}
-\\
-\texttt{high\_terminal\_penalty}
-&
-Q_{\mathrm{base}}
-&
-R_{\mathrm{base}}
-&
-50Q_{\mathrm{base}}
-\\
-\texttt{high\_position\_attitude\_penalty}
-&
-Q_{\mathrm{pa}}
-&
-R_{\mathrm{base}}
-&
-10Q_{\mathrm{base}}
-\\
-\texttt{high\_control\_penalty}
-&
-Q_{\mathrm{base}}
-&
-10R_{\mathrm{base}}
-&
-10Q_{\mathrm{base}}
-\\
-\texttt{low\_control\_penalty}
-&
-Q_{\mathrm{base}}
-&
-0.1R_{\mathrm{base}}
-&
-10Q_{\mathrm{base}}
-\end{array}
-\]
+Case & $Q$ & $R$ & $Q_f$ \\
+\hline
+baseline & $Q_{\mathrm{base}}$ & $R_{\mathrm{base}}$ & $10Q_{\mathrm{base}}$ \\
+high terminal & $Q_{\mathrm{base}}$ & $R_{\mathrm{base}}$ & $50Q_{\mathrm{base}}$ \\
+high pos./att. & $Q_{\mathrm{pa}}$ & $R_{\mathrm{base}}$ & $10Q_{\mathrm{base}}$ \\
+high control & $Q_{\mathrm{base}}$ & $10R_{\mathrm{base}}$ & $10Q_{\mathrm{base}}$ \\
+low control & $Q_{\mathrm{base}}$ & $0.1R_{\mathrm{base}}$ & $10Q_{\mathrm{base}}$ \\
+\hline
+\end{tabular}
+\caption{Weighting matrix configurations used in the hover LQR comparison.}
+\label{tab:hover-lqr-weights}
+\end{table}
 where \(Q_{\mathrm{pa}}\) is obtained from \(Q_{\mathrm{base}}\) by multiplying the running penalties on \(p_x\), \(p_z\), and \(\theta\) by a factor of \(10\).
 
 \subsubsection{Trajectory comparison}
@@ -274,7 +249,7 @@ Figure~\ref{fig:hover-physical-trajectory} shows the reconstructed physical traj
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_physical_position_trajectory.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_physical_position_trajectory.png}
     \caption{Reconstructed physical trajectories for the hover LQR experiment under different weighting matrices.}
     \label{fig:hover-physical-trajectory}
 \end{figure}
@@ -287,14 +262,14 @@ Figures~\ref{fig:hover-delta-px}--\ref{fig:hover-delta-m} show the time historie
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_p_x.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_p_x.png}
     \caption{Horizontal position deviation \(\delta p_x(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-px}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_v_x.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_v_x.png}
     \caption{Horizontal velocity deviation \(\delta v_x(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-vx}
 \end{figure}
@@ -303,39 +278,35 @@ The vertical response is more directly affected by thrust. The plots of \(\delta
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_p_z.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_p_z.png}
     \caption{Vertical position deviation \(\delta p_z(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-pz}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_v_z.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_v_z.png}
     \caption{Vertical velocity deviation \(\delta v_z(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-vz}
 \end{figure}
 
-The attitude and angular velocity histories show the mechanism by which horizontal corrections are generated near hover. Since horizontal acceleration is produced primarily by tilting the thrust vector, the LQR controller uses torque to shape \(\delta\theta\) and \(\delta\omega\). Penalizing attitude more heavily keeps \(\delta\theta\) closer to zero, but this can also reduce the controller's ability to generate horizontal acceleration over a short horizon.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_theta.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_theta.png}
     \caption{Attitude deviation \(\delta\theta(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-theta}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_omega.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_omega.png}
     \caption{Angular velocity deviation \(\delta\omega(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-omega}
 \end{figure}
 
-The mass deviation \(\delta m\) is measured relative to the nominal hover trajectory. Therefore, positive \(\delta m\) should not be interpreted as an increasing physical mass. Rather, it means that the trajectory has consumed less fuel than the nominal hover reference over that portion of the interval. This is consistent with the cases in which \(\delta T\) is negative for a significant part of the maneuver.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_m.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_m.png}
     \caption{Mass deviation \(\delta m(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-m}
 \end{figure}
@@ -346,14 +317,14 @@ Figures~\ref{fig:hover-delta-T} and~\ref{fig:hover-delta-tau} show the thrust an
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_T.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_T.png}
     \caption{Thrust deviation \(\delta T(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-T}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.90\columnwidth]{figures/hover_delta_tau.png}
+    \includegraphics[width=0.90\columnwidth]{sections/PART5B/hover_delta_tau.png}
     \caption{Torque deviation \(\delta\tau(t)\) for the hover LQR experiment.}
     \label{fig:hover-delta-tau}
 \end{figure}

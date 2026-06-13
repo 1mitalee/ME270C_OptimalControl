@@ -4,7 +4,7 @@
 
 In the previous subsection, we studied the linearized dynamics around the hover trim condition. We now consider linearizations around non-equilibrium nominal trajectories. The purpose of this subsection is to compare how the controllability properties change when the vehicle is not exactly hovering, but instead follows a powered-descent trajectory with significant horizontal velocity and weak translational--rotational coupling.
 
-We consider three cases for comparison:
+We consider two cases for comparison:
 \begin{enumerate}
     \item a nominal descent trajectory with thrust close to hover and zero torque,
     \item a nominal descent trajectory with a prescribed small attitude oscillation, which introduces additional coupling between rotational and translational motion.
@@ -12,7 +12,7 @@ We consider three cases for comparison:
 
 The nonlinear dynamics are linearized along a nominal trajectory
 \[
-    x^\star(t)
+    \small{x^\star(t)
     =
     \begin{bmatrix}
         p_x^\star(t) &
@@ -22,14 +22,15 @@ The nonlinear dynamics are linearized along a nominal trajectory
         \theta^\star(t) &
         \omega^\star(t) &
         m^\star(t)
-    \end{bmatrix}^{\top},
-    \qquad
-    u^\star(t)
+    \end{bmatrix}^{\top}},
+\]
+\[
+   \small{u^\star(t)
     =
     \begin{bmatrix}
         T^\star(t) &
         \tau^\star(t)
-    \end{bmatrix}^{\top}.
+    \end{bmatrix}^{\top}.}
 \]
 Writing
 \[
@@ -114,10 +115,10 @@ with
 \[
     \beta = 0.01.
 \]
-The initial condition is
-\[
-x(0) = (0, 200, 100, -20, 0, 0, 20)
-\]
+% The initial condition is
+% \[
+% x(0) = (0, 200, 100, -20, 0, 0, 20)
+% \]
 
 Since the torque is zero and the initial attitude and angular velocity are zero, the nominal attitude remains
 \[
