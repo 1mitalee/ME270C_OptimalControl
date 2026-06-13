@@ -3,28 +3,12 @@
 \subsection{Linearization Around Hover Trim Point}
 \label{subsec:hover_linearization}
 
-The first linear model is obtained by expanding the nonlinear variable-mass dynamics about a near-hover operating condition. The nonlinear state and input are
-\[
-    x = \begin{bmatrix} p_x & p_z & v_x & v_z & \theta & \omega & m \end{bmatrix}^\top,
-    \qquad
-    u = \begin{bmatrix} T & \tau \end{bmatrix}^\top,
-\]
-with dynamics
-\begin{align*}
-    \dot p_x &= v_x, \\
-    \dot p_z &= v_z, \\
-    \dot v_x &= \frac{T}{m}\sin\theta, \\
-    \dot v_z &= \frac{T}{m}\cos\theta - g, \\
-    \dot \theta &= \omega, \\
-    \dot \omega &= \frac{\tau}{I}, \\
-    \dot m &= -\alpha T.
-\end{align*}
 
 We choose the nominal hover operating point
 \[
     x^\star =
     \begin{bmatrix}
-        p_x^\star & p_z^\star & 0 & 0 & 0 & 0 & m_h
+        p_x^\star & p_z^\star & 0 & 0 & 0 & 0 & m_h^\star
     \end{bmatrix}^\top,
     \qquad
     u^\star =
@@ -32,12 +16,12 @@ We choose the nominal hover operating point
         m_h g & 0
     \end{bmatrix}^\top.
 \]
-Here $m_h$ denotes the mass value about which the model is linearized. Strictly speaking, this point is not an equilibrium of the full seven-dimensional variable-mass system because
+Strictly speaking, this point is not an equilibrium of the full seven-dimensional variable-mass system because
 \[
     f(x^\star,u^\star)
     =
     \begin{bmatrix}
-        0 & 0 & 0 & 0 & 0 & 0 & -\alpha m_h g
+        p_x^\star & p_z^\star & 0 & 0 & 0 & 0 & -\alpha m_h g
     \end{bmatrix}^\top
     \neq 0.
 \]
